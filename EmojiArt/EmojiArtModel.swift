@@ -13,8 +13,8 @@ struct EmojiArtModel {
     
     struct Emoji: Identifiable, Hashable {
         let text: String
-        var x: Int
-        var y: Int
+        var x: Int  // offset from center
+        var y: Int  // offset from center
         var size: Int
         let id: UInt16
         

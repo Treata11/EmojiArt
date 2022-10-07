@@ -13,6 +13,7 @@ class EmojiArtDocument: ObservableObject {
     
     init() {
         emojiArt = EmojiArtModel()
+        emojiArt.addEmoji("ABCDEFG", at: (-500, -400), size: 90)
     }
     
     var emojis: [EmojiArtModel.Emoji] { emojiArt.emojis }
@@ -48,6 +49,12 @@ class EmojiArtDocument: ObservableObject {
 extension Collection where Element: Identifiable {
     func index(matching element: Element) -> Self.Index? {
         firstIndex(where: {$0.id == element.id} )
+    }
+}
+
+extension CGRect {
+    var center: CGPoint {
+        return CGPoint(x: midX, y: midY)
     }
 }
 
