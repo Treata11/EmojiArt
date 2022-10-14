@@ -19,25 +19,32 @@ class EmojiArtDocument: ObservableObject {
     
     init() {
         emojiArt = EmojiArtModel()
-        emojiArt.addEmoji("ABCDEFG", at: (-500, -400), size: 90)
     }
     
     var emojis: [EmojiArtModel.Emoji] { emojiArt.emojis }
     var background: EmojiArtModel.Background { emojiArt.background }
     
     @Published var backgroundImage: UIImage?
+    @Published var backgroundImageFetchStatus = backgroundImageFetchStatus.idle
+    
+    enum backgroundImageFetchStatus {
+        case idle
+        case fetching
+    }
     
     private func fetchBackgroundDataIfNecessary() {
         backgroundImage = nil
         switch emojiArt.background {
         case .url(let url):
             // fetch the url
+            self.backgroundImageFetchStatus = .fetching
             DispatchQueue.global(qos: .userInitiated).async {
                 let imageData = try? Data(contentsOf: url)
                 DispatchQueue.main.async { [weak self] in   // [weak self]: weak is a method to tell the compiler to create an optional self within our closure. Closures are refrence types and when the refer to self, self is going to last in the memory even if we remove the document, because the closure had refrenced 'self' and RefrenceCount isn't going to remove self from the heap. We have to specify the refrence as weak for the complier to not to count it Meaning that when we remove the document (url), it won't remain in the heap 
                     if self?.emojiArt.background == EmojiArtModel.Background.url(url) { // art of asynchronous programming language: what if user is impatient and drags a new url from the web before the initial image is fully downloaded: We have to ignore the first try, or it will apear after downloaded and blocks the user's intents.
+                        self?.backgroundImageFetchStatus = .idle
                         if imageData != nil {
-                            self?.backgroundImage = UIImage(data: imageData! )
+                            self?.backgroundImage = UIImage(data: imageData!)
                         }
                     }
                 }

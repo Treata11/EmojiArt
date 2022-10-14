@@ -10,7 +10,7 @@ import SwiftUI
 struct EmojiArtDocumentView: View {
     @ObservedObject var document: EmojiArtDocument
     
-    let defaultEmojiFontSize: CGFloat = 51
+    let defaultEmojiFontSize: CGFloat = 59
     
     var body: some View {
         VStack(spacing: 0) {
@@ -27,10 +27,14 @@ struct EmojiArtDocumentView: View {
                     OptionalImage(uiImage: document.backgroundImage)
                         .position(converFromEmojiCoordinates((0,0), in: geometry))
                 )
-                ForEach(document.emojis) { emoji in
-                    Text(emoji.text)
-                        .font(.system(size: fontSize(for: emoji)))
-                        .position(position(for: emoji, in: geometry))
+                if document.backgroundImageFetchStatus == .fetching {
+                    ProgressView().scaleEffect(3)   // ProgressView() built in swiftUI, "the world famous loading circle"
+                } else {
+                    ForEach(document.emojis) { emoji in
+                        Text(emoji.text)
+                            .font(.system(size: fontSize(for: emoji)))
+                            .position(position(for: emoji, in: geometry))
+                    }
                 }
             }
             .onDrop(of: [.plainText,.url,.image], isTargeted: nil) { providers, location in
