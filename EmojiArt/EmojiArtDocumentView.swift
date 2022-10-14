@@ -24,7 +24,7 @@ struct EmojiArtDocumentView: View {
         GeometryReader { geometry in
             ZStack {
                 Color.gray.brightness(0.39).overlay(
-                    Image(uiImage: document.backgroundImage)
+                    OptionalImage(uiImage: document.backgroundImage)
                         .position(converFromEmojiCoordinates((0,0), in: geometry))
                 )
                 ForEach(document.emojis) { emoji in
