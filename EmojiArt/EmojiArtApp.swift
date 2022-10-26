@@ -17,3 +17,8 @@ struct EmojiArtApp: App {
         }
     }
 }
+
+
+// Failed to register bundle identifier: You are not allowed to register an app identifier with the "com.apple." prefix. Change your bundle identifier and try again.
+
+
