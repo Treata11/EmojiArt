@@ -27,6 +27,7 @@ struct EmojiArtDocumentView: View {
                     OptionalImage(uiImage: document.backgroundImage)
                         .scaleEffect(zoomScale)
                         .position(converFromEmojiCoordinates((0,0), in: geometry))
+                        .gesture(doubleTapToZoom(in: geometry.size))
                 )
                 if document.backgroundImageFetchStatus == .fetching {
                     ProgressView().scaleEffect(3)   // ProgressView() built in swiftUI, "the world famous loading circle"
@@ -97,7 +98,14 @@ struct EmojiArtDocumentView: View {
     
     @State private var zoomScale: CGFloat = 1
     
-    private func zoomToFit(_ image: UIImage?, size: CGSize) {
+    func doubleTapToZoom(in size: CGSize) -> some Gesture {
+        return TapGesture(count: 2)
+            .onEnded {
+                zoomToFit(document.backgroundImage, in: size)
+            }
+    }
+    
+    private func zoomToFit(_ image: UIImage?, in size: CGSize) {
         if let image = image, image.size.width > 0, image.size.height > 0, size.width > 0, size.height > 0 {
             let hZoom = size.width / image.size.width
             let vZoom = size.height / image.size.height
