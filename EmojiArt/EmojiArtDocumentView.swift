@@ -25,6 +25,7 @@ struct EmojiArtDocumentView: View {
             ZStack {
                 Color.gray.brightness(0.39).overlay(
                     OptionalImage(uiImage: document.backgroundImage)
+                        .scaleEffect(zoomScale)
                         .position(converFromEmojiCoordinates((0,0), in: geometry))
                 )
                 if document.backgroundImageFetchStatus == .fetching {
@@ -33,6 +34,7 @@ struct EmojiArtDocumentView: View {
                     ForEach(document.emojis) { emoji in
                         Text(emoji.text)
                             .font(.system(size: fontSize(for: emoji)))
+                            .scaleEffect(zoomScale )
                             .position(position(for: emoji, in: geometry))
                     }
                 }
@@ -60,7 +62,8 @@ struct EmojiArtDocumentView: View {
                     document.addEmoji(
                         String(emoji),
                         at: convertToEmojiCoordinates(location, in: geometry),
-                         size: defaultEmojiFontSize)
+                         size: defaultEmojiFontSize / zoomScale
+                    )
                 }
             }
         }
@@ -74,8 +77,8 @@ struct EmojiArtDocumentView: View {
     private func convertToEmojiCoordinates(_ location: CGPoint, in geometry: GeometryProxy) -> (x: Int, y: Int) {
         let center: CGPoint = geometry.frame(in: .local).center
         let location = CGPoint(
-            x: location.x - center.x,
-            y: location.y - center.y
+            x: (location.x - center.x) / zoomScale,
+            y: (location.y - center.y) / zoomScale
         )
         return (Int(location.x), Int(location.y))
     }
@@ -83,13 +86,23 @@ struct EmojiArtDocumentView: View {
         let center: CGPoint = geometry.frame(in: .local).center
          
         return CGPoint(
-            x: center.x + CGFloat(location.x),
-            y: center.y + CGFloat(location.y)
+            x: center.x + CGFloat(location.x) * zoomScale,
+            y: center.y + CGFloat(location.y) * zoomScale
         )
     }
     
     private func position(for emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
         converFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
+    }
+    
+    @State private var zoomScale: CGFloat = 1
+    
+    private func zoomToFit(_ image: UIImage?, size: CGSize) {
+        if let image = image, image.size.width > 0, image.size.height > 0, size.width > 0, size.height > 0 {
+            let hZoom = size.width / image.size.width
+            let vZoom = size.height / image.size.height
+            zoomScale = min(hZoom, vZoom)
+        }
     }
     
     let testEmojis = "🍎🫒🍕🥗🍫🥎🛹🛼🚵🏻🚣🏼🏵🎭🎮🚚🚲🛸🚁🛰🏝🚥🌆🖥🗜💽🕰🔌🔨🧨"
