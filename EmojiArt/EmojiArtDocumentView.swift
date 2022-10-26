@@ -40,10 +40,12 @@ struct EmojiArtDocumentView: View {
                     }
                 }
             }
+            .clipped() // viewModifier; stay inside your place, don't go outside the rectangle that you chose for youself during the layout proccess!
             .onDrop(of: [.plainText,.url,.image], isTargeted: nil) { providers, location in
                 return drop(providers: providers, at: location, in: geometry)
             }
         }
+        .gesture(zoomGesture())
     }
     
     private func drop(providers: [NSItemProvider], at location: CGPoint, in geometry: GeometryProxy) -> Bool {
@@ -96,12 +98,30 @@ struct EmojiArtDocumentView: View {
         converFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
     }
     
-    @State private var zoomScale: CGFloat = 1
+    @State private var steadyStateZoomScale: CGFloat = 1
+    @GestureState private var gestureZoomScale: CGFloat = 1 //  It's the scale between the fingers ONLY while the pinch is happening
     
-    func doubleTapToZoom(in size: CGSize) -> some Gesture {
+    private var zoomScale: CGFloat {
+        steadyStateZoomScale * gestureZoomScale
+    }
+    
+    private func zoomGesture() -> some Gesture {
+        MagnificationGesture()
+            .updating($gestureZoomScale) { latestGestureScale, gestureZoomScale, transaction in
+                // latestGestureScale, ourGestureStateInout, transaction in
+                gestureZoomScale = latestGestureScale
+            }
+            .onEnded { gestureScaleAtEnd in
+                SteadyStateZoomScale *= gestureScaleAtEnd
+            }
+    }
+    
+    private func doubleTapToZoom(in size: CGSize) -> some Gesture {
         return TapGesture(count: 2)
             .onEnded {
-                zoomToFit(document.backgroundImage, in: size)
+                withAnimation {
+                    zoomToFit(document.backgroundImage, in: size)
+                }
             }
     }
     
@@ -109,7 +129,7 @@ struct EmojiArtDocumentView: View {
         if let image = image, image.size.width > 0, image.size.height > 0, size.width > 0, size.height > 0 {
             let hZoom = size.width / image.size.width
             let vZoom = size.height / image.size.height
-            zoomScale = min(hZoom, vZoom)
+            SteadyStateZoomScale = min(hZoom, vZoom)
         }
     }
     
