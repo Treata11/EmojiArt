@@ -112,7 +112,7 @@ struct EmojiArtDocumentView: View {
                 gestureZoomScale = latestGestureScale
             }
             .onEnded { gestureScaleAtEnd in
-                SteadyStateZoomScale *= gestureScaleAtEnd
+                steadyStateZoomScale *= gestureScaleAtEnd
             }
     }
     
