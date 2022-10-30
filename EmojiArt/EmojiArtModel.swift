@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct EmojiArtModel {
+struct EmojiArtModel: Encodable, Decodable {
     var emojis = [Emoji]()
     var background = Background.blank
     
-    struct Emoji: Identifiable, Hashable {
+    struct Emoji: Identifiable, Hashable, Codable {
         let text: String
         var x: Int  // offset from center
         var y: Int  // offset from center
@@ -25,6 +25,10 @@ struct EmojiArtModel {
             self.size = size
             self.id = id
         }
+    }
+    
+    func json() throws -> Data {
+        return try JSONEncoder().encode(self)
     }
     
     init() { }  //returning void representing that former init is for access control and not a free init
