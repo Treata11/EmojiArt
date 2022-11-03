@@ -11,10 +11,19 @@ import SwiftUI
 class EmojiArtDocument: ObservableObject {
     @Published private(set) var emojiArt: EmojiArtModel {
         didSet {    // Super important, to check our model wether any values had been changed to make it have effect on our UI.
-            autosave()
+            scheduleAutosave()
             if emojiArt.background != oldValue.background {
                 fetchBackgroundDataIfNecessary()
             }
+        }
+    }
+    
+    private var autosaveTimer: Timer?
+    
+    private func scheduleAutosave() {
+        autosaveTimer?.invalidate()
+        autosaveTimer = Timer.scheduledTimer(withTimeInterval: Autosave.coalescingInterval, repeats: false) { _ in
+            self.autosave() // [weak self] is not used, we want self to be held on memory even if the app is closed, otherwise saving won't happen
         }
     }
     
@@ -24,7 +33,7 @@ class EmojiArtDocument: ObservableObject {
             let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first // .first is used on the behalf of the fact thtat only one folder is used for directory in iOS,
             return documentDirectory?.appendingPathComponent(filename)
         }
-        
+            static let coalescingInterval = 6.0
     }
     
     private func autosave() {
