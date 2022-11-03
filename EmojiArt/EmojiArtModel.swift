@@ -31,6 +31,15 @@ struct EmojiArtModel: Encodable, Decodable {
         return try JSONEncoder().encode(self)
     }
     
+    init(json: Data) throws {
+        self = try JSONDecoder().decode(EmojiArtModel.self, from: json)
+    }
+    
+    init(url: URL) throws {
+        let data = try Data(contentsOf: url)
+        self = try EmojiArtModel(json: data)
+    }
+    
     init() { }  //returning void representing that former init is for access control and not a free init
     
     private var uniqueEmojiId = 0
