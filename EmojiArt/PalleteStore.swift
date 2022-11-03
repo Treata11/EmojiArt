@@ -20,5 +20,3 @@ class PalleteStore {
     
     init(named name: String) {
         self.name = name
-    }
-}
