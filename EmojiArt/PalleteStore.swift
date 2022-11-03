@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Pallete: Identifiable {
+struct Pallete: Identifiable, Codable {
     var name: String
     var emojis: String
     var id: Int
@@ -33,18 +33,23 @@ class PalleteStore {
     }
     
     private func storeInUserDefaults() {
-        UserDefaults.standard.set(palletes.map { [$0.name,$0.emojis,String($0.id)] }, forKey: userDefaultsKey)
+        UserDefaults.standard.set(try? JSONEncoder().encode(palletes), forKey: userDefaultsKey)
+//        UserDefaults.standard.set(palletes.map { [$0.name,$0.emojis,String($0.id)] }, forKey: userDefaultsKey)
     } // map is being used to omit the array[any] type, this API is from the old world and is being compatible with swift by this trick
     
     private func restoreFromUserDefaults() {
-        if let palleteAsPropertyList = UserDefaults.standard.array(forKey: userDefaultsKey) as? [[String]] {
-            for palletesAsArray in palletesAsPropertyList {
-                if palletesAsArray.count == 3, let id = Int(palletesAsArray[2]), !palletes.contains(where: { $0.id == id }) {
-                    let pallete = Pallete(name: palletesAsArray[0], emojis: palletesAsArray[1], id: id)
-                    palletes.append(pallete)
-                }
-            }
+        if let jsonData = UserDefaults.standard.data(forKey: userDefaultsKey),
+        let decodedPalletes = try? JSONDecoder().decode([Pallete.self], from: jsonData) {
+            palletes = decodedPalletes
         }
+//        if let palleteAsPropertyList = UserDefaults.standard.array(forKey: userDefaultsKey) as? [[String]] {
+//            for palletesAsArray in palletesAsPropertyList {
+//                if palletesAsArray.count == 3, let id = Int(palletesAsArray[2]), !palletes.contains(where: { $0.id == id }) {
+//                    let pallete = Pallete(name: palletesAsArray[0], emojis: palletesAsArray[1], id: id)
+//                    palletes.append(pallete)
+//                }
+//            }
+//        }
     }
     
     init(named name: String) {
