@@ -160,6 +160,8 @@ struct EmojiArtDocumentView: View {
     }
 }
 
+// MARK: -Pallete
+
 struct ScrollingEmojisView: View {
     let emojis: String
     
