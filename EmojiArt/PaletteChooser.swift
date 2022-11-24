@@ -1,5 +1,5 @@
 //
-//  PalletteChooser.swift
+//  PaletteChooser.swift
 //  EmojiArt
 //
 //  Created by Treata Norouzi on 11/24/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PalletteChooser : View {
+struct PaletteChooser : View {
     var emojiFontSize: CGFloat = 40
     var emojiFont: Font { .system(size: emojiFontSize) }
     
@@ -39,6 +39,6 @@ struct ScrollingEmojisView: View {
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        PalletteChooser ()
+        PaletteChooser ()
     }
 }
