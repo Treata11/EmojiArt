@@ -11,15 +11,26 @@ struct PaletteChooser : View {
     var emojiFontSize: CGFloat = 40
     var emojiFont: Font { .system(size: emojiFontSize) }
     
-    @EnvironmentObject var store: PaletteStore 
+    @EnvironmentObject var store: PaletteStore
+    
+    @State var chosenPaletteIndex = 0
     
     var body: some View {
-        let palette = store.palette(at: 0)
+        let palette = store.palette(at: chosenPaletteIndex)
         HStack {
             Text(palette.name)
             ScrollingEmojisView(emojis: palette.emojis)
                 .font(emojiFont)
         }
+    }
+    
+    var paletteControlButton: some View {
+        Button {
+            chosenPaletteIndex = (chosenPaletteIndex + 1) % store.palettes.count
+        } label: {
+            Image(systemName: "paintpalette")
+        }
+        .font(emojiFont)
     }
 }
 
