@@ -16,11 +16,9 @@ struct PaletteChooser : View {
     @State var chosenPaletteIndex = 0
     
     var body: some View {
-        let palette = store.palette(at: chosenPaletteIndex)
         HStack {
-            Text(palette.name)
-            ScrollingEmojisView(emojis: palette.emojis)
-                .font(emojiFont)
+            paletteControlButton
+            body(for: store.palette(at: chosenPaletteIndex))
         }
     }
     
@@ -31,6 +29,14 @@ struct PaletteChooser : View {
             Image(systemName: "paintpalette")
         }
         .font(emojiFont)
+    }
+    
+    func body(for palette: Palette) -> some View {
+        HStack {
+            Text(palette.name)
+            ScrollingEmojisView(emojis: palette.emojis)
+                .font(emojiFont)
+        }
     }
 }
 
