@@ -15,8 +15,7 @@ struct EmojiArtDocumentView: View {
     var body: some View {
         VStack(spacing: 0) {
             documentBody
-            
-            pallete
+            PalletteChooser(emojiFontSize: defaultEmojiFontSize)
         }
     }
     
