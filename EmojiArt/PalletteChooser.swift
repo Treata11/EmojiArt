@@ -11,6 +11,8 @@ struct PalletteChooser : View {
     var emojiFontSize: CGFloat = 40
     var emojiFont: Font { .system(size: emojiFontSize) }
     
+    @EnvironmentObject var store: PaletteStore 
+    
     var body: some View {
         ScrollingEmojisView(emojis: testEmojis)
             .font(emojiFont)
