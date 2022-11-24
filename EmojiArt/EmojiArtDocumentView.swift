@@ -65,14 +65,14 @@ struct EmojiArtDocumentView: View {
                     document.addEmoji(
                         String(emoji),
                         at: convertToEmojiCoordinates(location, in: geometry),
-                         size: defaultEmojiFontSize / zoomScale
+                        size: defaultEmojiFontSize / zoomScale
                     )
                 }
             }
         }
         return found
     }
-        
+    
     private func fontSize(for emoji: EmojiArtModel.Emoji) -> CGFloat {
         CGFloat(emoji.size)
     }
@@ -87,7 +87,7 @@ struct EmojiArtDocumentView: View {
     }
     private func converFromEmojiCoordinates(_ location: (x: Int, y: Int), in geometry: GeometryProxy) -> CGPoint {
         let center: CGPoint = geometry.frame(in: .local).center
-         
+        
         return CGPoint(
             x: center.x + CGFloat(location.x) * zoomScale,
             y: center.y + CGFloat(location.y) * zoomScale
@@ -151,16 +151,17 @@ struct EmojiArtDocumentView: View {
             steadyStateZoomScale = min(hZoom, vZoom)
         }
     }
+
     
-    let testEmojis = "🍎🫒🍕🥗🍫🥎🛹🛼🚵🏻🚣🏼🏵🎭🎮🚚🚲🛸🚁🛰🏝🚥🌆🖥🗜💽🕰🔌🔨🧨"
+// MARK: -Pallette
     
     var pallete: some View {
         ScrollingEmojisView(emojis: testEmojis)
             .font(.system(size: defaultEmojiFontSize))
     }
-}
 
-// MARK: -Pallete
+    let testEmojis = "🍎🫒🍕🥗🍫🥎🛹🛼🚵🏻🚣🏼🏵🎭🎮🚚🚲🛸🚁🛰🏝🚥🌆🖥🗜💽🕰🔌🔨🧨"
+}
 
 struct ScrollingEmojisView: View {
     let emojis: String
