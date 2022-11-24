@@ -20,6 +20,7 @@ struct PaletteChooser : View {
             paletteControlButton
             body(for: store.palette(at: chosenPaletteIndex))
         }
+        .clipped()  // To make the 2 views not to smash into eachother 
     }
     
     var paletteControlButton: some View {
@@ -37,6 +38,15 @@ struct PaletteChooser : View {
             ScrollingEmojisView(emojis: palette.emojis)
                 .font(emojiFont)
         }
+        .id(palette.id) // To make the transition function, to make the oldView go away instead of updating to make transition happen
+        .transition(rollTransition)
+    }
+    
+    var rollTransition: AnyTransition {
+        AnyTransition.asymmetric(
+            insertion: .offset(x: 0, y: emojiFontSize),
+            removal: .offset(x: 0, y: -emojiFontSize)
+            )
     }
 }
 
