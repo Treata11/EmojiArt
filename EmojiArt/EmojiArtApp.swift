@@ -9,8 +9,8 @@ import SwiftUI
 
 @main
 struct EmojiArtApp: App {
-    let document = EmojiArtDocument()
-    let paletteStore = PaletteStore(named: "Default")
+    @StateObject var document = EmojiArtDocument()  // MVVMs have to be marked with @StateObject on the top lvl of the app
+    @StateObject var paletteStore = PaletteStore(named: "Default")  // Essentially to mark any source of truth with @State
     
     var body: some Scene {
         WindowGroup {
