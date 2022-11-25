@@ -37,11 +37,24 @@ struct PaletteChooser : View {
     var contextMenu: some View {
         AnimatedActionButton(title: "New", systemImage: "plus") {
             store.insertPalette(named: "New", emojis: "", at: chosenPaletteIndex)
-            
         }
         AnimatedActionButton(title: "Delete", systemImage: "minus.circle") {
-           chosenPaletteIndex = store.removePalette(at: chosenPaletteIndex) // ???
-            
+           chosenPaletteIndex = store.removePalette(at: chosenPaletteIndex)
+        }
+        goToMenu
+    }
+    
+    var goToMenu: some View {
+        Menu {
+            ForEach (store.palettes) { palette in
+                AnimatedActionButton(title: palette.name) {
+                    if let index = store.palettes.firstIndex(where: { $0.id == palette.id }) {
+                        chosenPaletteIndex = index
+                    }
+                }
+            }
+    } label: {
+        Label("Edit", systemImage: "text.insert")
         }
     }
     
