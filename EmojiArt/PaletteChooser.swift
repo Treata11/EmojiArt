@@ -71,7 +71,7 @@ struct PaletteChooser : View {
         .id(palette.id) // To make the transition function, to make the oldView go away instead of updating to make transition happen
         .transition(rollTransition)
         .popover(isPresented: $editing) {   // same as the .sheet
-            PaletteEditor(palette: store.palettes[chosenPaletteIndex])
+            PaletteEditor(palette: $store.palettes[chosenPaletteIndex])
         }
     }
     
