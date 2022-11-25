@@ -54,7 +54,7 @@ struct PaletteChooser : View {
                 }
             }
     } label: {
-        Label("Edit", systemImage: "text.insert")
+        Label("Go To", systemImage: "text.insert")
         }
     }
     
