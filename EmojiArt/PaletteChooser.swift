@@ -48,7 +48,7 @@ struct PaletteChooser : View {
         Menu {
             ForEach (store.palettes) { palette in
                 AnimatedActionButton(title: palette.name) {
-                    if let index = store.palettes.firstIndex(where: { $0.id == palette.id }) {
+                    if let index = store.palettes.index(matching: palette) {
                         chosenPaletteIndex = index
                     }
                 }
