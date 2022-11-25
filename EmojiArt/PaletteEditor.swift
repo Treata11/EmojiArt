@@ -14,12 +14,12 @@ struct PaletteEditor: View {
         Form {
             TextField("Name", text: $palette.name)
         }
+        .frame(minWidth: 333, minHeight: 539)
     }
 }
 
 struct PaletteEditor_Previews: PreviewProvider {
     static var previews: some View {
         PaletteEditor()
-            .previewLayout(.fixed(width: /*@START_MENU_TOKEN@*/300.0/*@END_MENU_TOKEN@*/, height: /*@START_MENU_TOKEN@*/600.0/*@END_MENU_TOKEN@*/))
     }
 }
