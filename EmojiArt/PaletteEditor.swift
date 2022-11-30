@@ -27,15 +27,14 @@ struct PaletteEditor: View {
     
     var addEmojisSection: some View {
         Section(header: Text("Add Emojis")) {
-            TextField("", text: <#T##Binding<String>#>)
+            TextField("", text: $emojisToAdd)
         }
     }
 }
 
 struct PaletteEditor_Previews: PreviewProvider {
     static var previews: some View {
-        Text("Fix me!")
+        PaletteEditor(palette: .constant(PaletteStore(named: "Preview").palette(at: 4)))
             .previewLayout(.fixed(width: 300, height: 400))
-//        PaletteEditor()
     }
 }
