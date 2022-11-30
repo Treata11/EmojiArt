@@ -36,11 +36,13 @@ struct PaletteChooser : View {
     @ViewBuilder
     var contextMenu: some View {
         AnimatedActionButton(title: "Edit", systemImage: "pencil") {
-            editing = true
+//            editing = true
+            paletteToEdit = store.palette(at: chosenPaletteIndex)
         }
         AnimatedActionButton(title: "New", systemImage: "plus") {
             store.insertPalette(named: "New", emojis: "", at: chosenPaletteIndex)
-            editing = true
+//            editing = true
+            paletteToEdit = store.palette(at: chosenPaletteIndex)
         }
         AnimatedActionButton(title: "Delete", systemImage: "minus.circle") {
            chosenPaletteIndex = store.removePalette(at: chosenPaletteIndex)
@@ -70,12 +72,16 @@ struct PaletteChooser : View {
         }
         .id(palette.id) // To make the transition function, to make the oldView go away instead of updating to make transition happen
         .transition(rollTransition)
-        .popover(isPresented: $editing) {   // same as the .sheet
+//        .popover(isPresented: $editing) {   // same as the .sheet
+//            PaletteEditor(palette: $store.palettes[chosenPaletteIndex])
+//        }
+        .popover(item: $paletteToEdit) { palette in
             PaletteEditor(palette: $store.palettes[chosenPaletteIndex])
         }
     }
     
-    @State private var editing = false
+//    @State private var editing = false
+    @State private var paletteToEdit: Palette?
     
     var rollTransition: AnyTransition {
         AnyTransition.asymmetric(
