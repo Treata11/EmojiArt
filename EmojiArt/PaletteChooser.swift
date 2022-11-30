@@ -20,7 +20,7 @@ struct PaletteChooser : View {
             paletteControlButton
             body(for: store.palette(at: chosenPaletteIndex))
         }
-        .clipped()  // To make the 2 views not to smash into eachother
+        .clipped()  // To make the views not to smash into eachother
     }
     
     var paletteControlButton: some View {
@@ -71,16 +71,12 @@ struct PaletteChooser : View {
                 .font(emojiFont)
         }
         .id(palette.id) // To make the transition function, to make the oldView go away instead of updating to make transition happen
-        .transition(rollTransition)
-//        .popover(isPresented: $editing) {   // same as the .sheet
-//            PaletteEditor(palette: $store.palettes[chosenPaletteIndex])
-//        }
         .popover(item: $paletteToEdit) { palette in
             PaletteEditor(palette: $store.palettes[palette])
         }
+        .transition(rollTransition)
     }
     
-//    @State private var editing = false
     @State private var paletteToEdit: Palette?
     
     var rollTransition: AnyTransition {

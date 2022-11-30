@@ -13,6 +13,8 @@ struct PaletteEditor: View {
     var body: some View {
         Form {
             nameSection
+            addEmojisSection
+            removeEmojisSection
         }
         .frame(minWidth: 333, minHeight: 539)
     }
@@ -56,6 +58,7 @@ struct PaletteEditor: View {
                         }
                 }
             }
+            .font(.system(size: 40))
         }
     }
  }
