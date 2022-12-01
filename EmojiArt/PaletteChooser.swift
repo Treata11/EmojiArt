@@ -20,7 +20,7 @@ struct PaletteChooser : View {
             paletteControlButton
             body(for: store.palette(at: chosenPaletteIndex))
         }
-        .clipped()  // To make the views not to smash into eachother
+        .clipped()
     }
     
     var paletteControlButton: some View {
@@ -36,16 +36,17 @@ struct PaletteChooser : View {
     @ViewBuilder
     var contextMenu: some View {
         AnimatedActionButton(title: "Edit", systemImage: "pencil") {
-//            editing = true
             paletteToEdit = store.palette(at: chosenPaletteIndex)
         }
         AnimatedActionButton(title: "New", systemImage: "plus") {
             store.insertPalette(named: "New", emojis: "", at: chosenPaletteIndex)
-//            editing = true
             paletteToEdit = store.palette(at: chosenPaletteIndex)
         }
         AnimatedActionButton(title: "Delete", systemImage: "minus.circle") {
            chosenPaletteIndex = store.removePalette(at: chosenPaletteIndex)
+        }
+        AnimatedActionButton(title: "Manager", systemImage: "slider.vertical.3") {
+           managing = true
         }
         goToMenu
     }
@@ -71,13 +72,18 @@ struct PaletteChooser : View {
                 .font(emojiFont)
         }
         .id(palette.id) // To make the transition function, to make the oldView go away instead of updating to make transition happen
+        // Fix me!
         .popover(item: $paletteToEdit) { palette in
             PaletteEditor(palette: $store.palettes[palette])
         }
         .transition(rollTransition)
+        .sheet(isPresented: $managing) {
+            PaletteManager()
+        }
     }
     
     @State private var paletteToEdit: Palette?
+    @State private var managing = false
     
     var rollTransition: AnyTransition {
         AnyTransition.asymmetric(

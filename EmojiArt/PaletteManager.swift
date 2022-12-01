@@ -13,7 +13,7 @@ struct PaletteManager: View {
     var body: some View {
         List {
             ForEach(store.palettes) { palette in
-                VStack(alignment: .leading) {   // .leading is dependent on the language r->l or l->r
+                VStack(alignment: .leading) {
                     Text(palette.name)
                     Text(palette.emojis)
                 }
