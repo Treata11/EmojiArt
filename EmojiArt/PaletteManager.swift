@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PaletteManager: View {
     @EnvironmentObject var store: PaletteStore
+    @Environment(\.presentationMode) var presentationMode
     
     @State var editMode: EditMode = .inactive
     
@@ -21,6 +22,7 @@ struct PaletteManager: View {
                             Text(palette.name).font(editMode == .active ? .title2 : .subheadline)
                             Text(palette.emojis)
                         }
+                        .gesture(editMode == .active ? tap : nil)
                     }
                 }
                 .onDelete { indexSet in
@@ -33,9 +35,27 @@ struct PaletteManager: View {
             .navigationTitle("Manage Palettes")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                EditButton()    // Toggles the value of editMode in its environment
+                ToolbarItem {
+                    EditButton()    // Toggles the value of editMode in its environment
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    if presentationMode.wrappedValue.isPresented,
+                        UIDevice.current.userInterfaceIdiom != .pad {   // Not to be shown on iPads 
+                        Button("Close") {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                }
             }
             .environment(\.editMode, $editMode) // A binding EnvironmentValue
+        }
+    }
+    
+    // MARK: - Assignment
+
+    var tap: some Gesture {
+        TapGesture().onEnded {
+            // Feature to bring up a UI to edit themes
         }
     }
 }
