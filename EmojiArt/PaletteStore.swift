@@ -1,5 +1,5 @@
 //
-//  PalleteStore.swift
+//  PaletteStore.swift
 //  EmojiArt
 //
 //  Created by Treata Norouzi on 11/3/22.

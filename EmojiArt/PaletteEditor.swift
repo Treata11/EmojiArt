@@ -16,6 +16,7 @@ struct PaletteEditor: View {
             addEmojisSection
             removeEmojisSection
         }
+        .navigationTitle("Edit \(palette.name)")
         .frame(minWidth: 333, minHeight: 539)
     }
     
