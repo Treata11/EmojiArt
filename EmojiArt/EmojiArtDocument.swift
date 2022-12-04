@@ -89,7 +89,7 @@ class EmojiArtDocument: ObservableObject {
             let publisher = session.dataTaskPublisher(for: url)
                 .map { (data, urlResponse) in UIImage(data: data) } // Taking the publisher's data as an UIImage and ignoring the urlResponse of publisher's tuple
                 .replaceError(with: nil)    // Replace any error with the ```UIImage  = nil```
-                .receive(on: DispatchQueue.main)
+                .receive(on: DispatchQueue.main)    // .sink "part of the UI" has to happen on the mainQueue
             
             backgroundImageFetchCancellable = publisher
 //                .assign(to: \EmojiArtDocument.backgroundImage, on: self)
