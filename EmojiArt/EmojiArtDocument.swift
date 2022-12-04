@@ -86,18 +86,16 @@ class EmojiArtDocument: ObservableObject {
             self.backgroundImageFetchStatus = .fetching
             backgroundImageFetchCancellable?.cancel()   // To cancle any previous thread trying to fetch the UIImage
             let session = URLSession.shared
-            let publisher = session.dataTaskPublisher(for: url)
+            let publisher = session.dataTaskPublisher(for: url) // Get the session's dataTaskPublisher in this case $projectedValue == Publisher; the var's type is IMP
                 .map { (data, urlResponse) in UIImage(data: data) } // Taking the publisher's data as an UIImage and ignoring the urlResponse of publisher's tuple
                 .replaceError(with: nil)    // Replace any error with the ```UIImage  = nil```
                 .receive(on: DispatchQueue.main)    // .sink "part of the UI" has to happen on the mainQueue
-            
             backgroundImageFetchCancellable = publisher
-//                .assign(to: \EmojiArtDocument.backgroundImage, on: self)
                 .sink { [weak self] image in
                     self?.backgroundImage = image
                     self?.backgroundImageFetchStatus = (image != nil) ? .idle : .failed(url)
                 }
-            
+//                .assign(to: \EmojiArtDocument.backgroundImage, on: self)
             
             
 //            DispatchQueue.global(qos: .userInitiated).async {
