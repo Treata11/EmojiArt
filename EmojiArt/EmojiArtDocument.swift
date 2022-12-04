@@ -99,7 +99,7 @@ class EmojiArtDocument: ObservableObject {
                         print("failed error = \(error)")
                     }
                 },
-                      receiveValue: { [weak self] image in
+                receiveValue: { [weak self] image in
                     self?.backgroundImage = image
                     self?.backgroundImageFetchStatus = (image != nil) ? .idle : .failed(url)
                 }
