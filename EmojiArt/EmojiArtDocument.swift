@@ -89,7 +89,7 @@ class EmojiArtDocument: ObservableObject {
                 .map { (data, urlResponse) in UIImage(data: data) } // Taking the publisher's data as an UIImage and ignoring the urlResponse of publisher's tuple
                 .replaceError(with: nil)    // Replace any error with the ```UIImage  = nil```
             
-            backgroundImageFetchCancellable publisher
+            backgroundImageFetchCancellable = publisher
                 .assign(to: \EmojiArtDocument.backgroundImage, on: self)
 //            DispatchQueue.global(qos: .userInitiated).async {
 //                let imageData = try? Data(contentsOf: url)  //Data should be error handled; the call for the url can easily time-out so we have to decide what is going to happen if the 'try' fails
