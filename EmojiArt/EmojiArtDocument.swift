@@ -87,14 +87,23 @@ class EmojiArtDocument: ObservableObject {
             let session = URLSession.shared
             let publisher = session.dataTaskPublisher(for: url)
                 .map { (data, urlResponse) in UIImage(data: data) } // Taking the publisher's data as an UIImage and ignoring the urlResponse of publisher's tuple
-                .replaceError(with: nil)    // Replace any error with the ```UIImage  = nil```
+//                .replaceError(with: nil)    // Replace any error with the ```UIImage  = nil```
             
             backgroundImageFetchCancellable = publisher
 //                .assign(to: \EmojiArtDocument.backgroundImage, on: self)
-                .sink { [weak self] image in
+                .sink(receiveCompletion: { result in
+                    switch result {
+                    case .finished:
+                        print("success!")
+                    case .failure(let error):
+                        print("failed error = \(error)")
+                    }
+                },
+                      receiveValue: { [weak self] image in
                     self?.backgroundImage = image
                     self?.backgroundImageFetchStatus = (image != nil) ? .idle : .failed(url)
                 }
+                )
             
             
             
