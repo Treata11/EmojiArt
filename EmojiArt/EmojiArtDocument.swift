@@ -92,8 +92,8 @@ class EmojiArtDocument: ObservableObject {
             backgroundImageFetchCancellable = publisher
 //                .assign(to: \EmojiArtDocument.backgroundImage, on: self)
                 .sink { [weak self] image in
-                    self.backgroundImage = image
-                    self.backgroundImageFetchStatus = (image != nil) ? .idle : .failed(url)
+                    self?.backgroundImage = image
+                    self?.backgroundImageFetchStatus = (image != nil) ? .idle : .failed(url)
                 }
             
             
