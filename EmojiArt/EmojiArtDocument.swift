@@ -90,7 +90,14 @@ class EmojiArtDocument: ObservableObject {
                 .replaceError(with: nil)    // Replace any error with the ```UIImage  = nil```
             
             backgroundImageFetchCancellable = publisher
-                .assign(to: \EmojiArtDocument.backgroundImage, on: self)
+//                .assign(to: \EmojiArtDocument.backgroundImage, on: self)
+                .sink { [weak self] image in
+                    self.backgroundImage = image
+                    self.backgroundImageFetchStatus = (image != nil) ? .idle : .failed(url)
+                }
+            
+            
+            
 //            DispatchQueue.global(qos: .userInitiated).async {
 //                let imageData = try? Data(contentsOf: url)  //Data should be error handled; the call for the url can easily time-out so we have to decide what is going to happen if the 'try' fails
 //                DispatchQueue.main.async { [weak self] in   // [weak self]: weak is a method to tell the compiler to create an optional self within our closure. Closures are refrence types and when we refer to the self, self is going to last in the memory even if we remove the document, because the closure had refrenced 'self' and RefrenceCount isn't going to remove self from the heap. We have to specify the refrence as weak for the complier to not to count it Meaning that when we remove the document (url), it won't remain in the heap
