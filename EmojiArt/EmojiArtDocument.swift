@@ -8,7 +8,6 @@
 import SwiftUI
 import Combine
 
-
 class EmojiArtDocument: ObservableObject {
     @Published private(set) var emojiArt: EmojiArtModel {
         didSet {    // Super important, to check our model wether any values had been changed to make it have effect on our UI.
@@ -31,7 +30,7 @@ class EmojiArtDocument: ObservableObject {
     private struct Autosave { // Constants struct, usded for staticts
         static let filename = "Autosaved.emojiart"
         static var url: URL? {
-            let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first // .first is used on the behalf of the fact thtat only one folder is used for directory in iOS,
+            let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first // .first is used on the behalf of the fact that only one folder is used for directory in iOS,
             return documentDirectory?.appendingPathComponent(filename)
         }
             static let coalescingInterval = 6.0
