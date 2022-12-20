@@ -55,11 +55,15 @@ struct EmojiArtDocumentView: View {
                     break
                 }
             }
-            .onReceive(document.$backgroundImage) { image in 
-                zoomToFit(image, in: geometry.size)
+            .onReceive(document.$backgroundImage) { image in
+                if autozoom {
+                    zoomToFit(image, in: geometry.size)
+                }
             }
         }
     }
+    
+    @State private var autozoom = false
     
     @State private var alertToShow: IdentifiableAlert?
     
@@ -77,11 +81,13 @@ struct EmojiArtDocumentView: View {
     
     private func drop(providers: [NSItemProvider], at location: CGPoint, in geometry: GeometryProxy) -> Bool {
         var found = providers.loadObjects(ofType: URL.self) { url in
+            autozoom = true
             document.setBackground(EmojiArtModel.Background.url(url.imageURL))
         }
         if !found {
             found = providers.loadObjects(ofType: UIImage.self) { image in
                 if let data = image.jpegData(compressionQuality: 1.0) {
+                    autozoom = true 
                     document.setBackground(.imageData(data))
                 }
             }
@@ -125,7 +131,8 @@ struct EmojiArtDocumentView: View {
         converFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
     }
     
-    @State private var steadyStatePanOffset: CGSize = CGSize.zero
+    @SceneStorage("EmojiArtDocumentView.steadyStatePanOffset")
+    private var steadyStatePanOffset: CGSize = CGSize.zero
     @GestureState private var gesturePanOffset: CGSize = CGSize.zero
     
     private var panOffset: CGSize {
@@ -143,7 +150,9 @@ struct EmojiArtDocumentView: View {
             }
     }
     
-    @State private var steadyStateZoomScale: CGFloat = 1
+    // MARK: - Zooming
+    @SceneStorage("EmojiArtDocumentView.steadyStateZoomState")
+    private var steadyStateZoomScale: CGFloat = 1
     @GestureState private var gestureZoomScale: CGFloat = 1 //  It's the scale between the fingers ONLY while the pinch is happening
     
     private var zoomScale: CGFloat {
