@@ -10,7 +10,7 @@ import SwiftUI
 struct EmojiArtDocumentView: View {
     @ObservedObject var document: EmojiArtDocument
     
-    let defaultEmojiFontSize: CGFloat = 59
+    @ScaledMetric var defaultEmojiFontSize: CGFloat = 59
     
     var body: some View {
         VStack(spacing: 0) {
@@ -87,7 +87,7 @@ struct EmojiArtDocumentView: View {
         if !found {
             found = providers.loadObjects(ofType: UIImage.self) { image in
                 if let data = image.jpegData(compressionQuality: 1.0) {
-                    autozoom = true 
+                    autozoom = true
                     document.setBackground(.imageData(data))
                 }
             }
