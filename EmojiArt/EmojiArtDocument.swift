@@ -8,7 +8,8 @@
 import SwiftUI
 import Combine
 
-class EmojiArtDocument: ObservableObject {
+class EmojiArtDocument: ObservableObject
+{
     @Published private(set) var emojiArt: EmojiArtModel {
         didSet {    // Super important, to check our model wether any values had been changed to make it have effect on our UI.
             scheduleAutosave()
