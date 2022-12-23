@@ -13,8 +13,8 @@ struct EmojiArtApp: App {
     @StateObject var paletteStore = PaletteStore(named: "Default")  // Essentially to mark any source of truth with @State
     
     var body: some Scene {
-        WindowGroup {
-            EmojiArtDocumentView(document: document)
+        DocumentGroup( newDocument: {EmojiArtDocument()} ) { config in
+            EmojiArtDocumentView(document: config.document)
                 .environmentObject(paletteStore)  // Injecting paletteStore Model at top level, this makes it be injected to EmojiArtDocumentView and all Views using it and their bodies
         }
     }
