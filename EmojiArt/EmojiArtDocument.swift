@@ -15,6 +15,8 @@ extension UTType {
 
 class EmojiArtDocument: ReferenceFileDocument
 {
+    // MARK: Read&Write
+    
     func snapshot(contentType: UTType) throws -> Data {
         try emojiArt.json()
     }
@@ -52,6 +54,9 @@ class EmojiArtDocument: ReferenceFileDocument
     var emojis: [EmojiArtModel.Emoji] { emojiArt.emojis }
     var background: EmojiArtModel.Background { emojiArt.background }
     
+    
+    // MARK: Background
+    
     @Published var backgroundImage: UIImage?
     @Published var backgroundImageFetchStatus = backgroundImageFetchStatus.idle
     
@@ -79,23 +84,7 @@ class EmojiArtDocument: ReferenceFileDocument
                     self?.backgroundImage = image
                     self?.backgroundImageFetchStatus = (image != nil) ? .idle : .failed(url)
                 }
-//                .assign(to: \EmojiArtDocument.backgroundImage, on: self)
-            
-            
-//            DispatchQueue.global(qos: .userInitiated).async {
-//                let imageData = try? Data(contentsOf: url)  //Data should be error handled; the call for the url can easily time-out so we have to decide what is going to happen if the 'try' fails
-//                DispatchQueue.main.async { [weak self] in   // [weak self]: weak is a method to tell the compiler to create an optional self within our closure. Closures are refrence types and when we refer to the self, self is going to last in the memory even if we remove the document, because the closure had refrenced 'self' and RefrenceCount isn't going to remove self from the heap. We have to specify the refrence as weak for the complier to not to count it Meaning that when we remove the document (url), it won't remain in the heap
-//                    if self?.emojiArt.background == EmojiArtModel.Background.url(url) { // art of asynchronous programming language: what if user is impatient and drags a new url from the web before the initial image is fully downloaded: We have to ignore the first try, or it will apear after downloaded and blocks the user's intents.
-//                        self?.backgroundImageFetchStatus = .idle
-//                        if imageData != nil {
-//                            self?.backgroundImage = UIImage(data: imageData!)
-//                        }
-//                        if self?.background.imageData == nil {
-//                            self?.backgroundImageFetchStatus = .failed(url)
-//                        }
-//                    }
-//                }
-//            }
+ 
              
         case .imageData(let data):
             backgroundImage = UIImage(data: data)
@@ -127,6 +116,17 @@ class EmojiArtDocument: ReferenceFileDocument
             emojiArt.emojis[index].size = Int(CGFloat(emojiArt.emojis[index].size) * scale.rounded(.toNearestOrAwayFromZero))
             
         }
+    }
+    
+    // MARK: -Undo
+    
+    private func undoablyPerform(operation: String,  with undoManager: UndoManager? = nil, doit:() -> Void) {
+        let oldEmojiArt = emojiArt
+        doit()
+        undoManager?.registerUndo(withTarget: self) { myself in
+            myself.emojiArt = oldEmojiArt
+        }
+        undoManager?.setActionName(operation)
     }
 }
 

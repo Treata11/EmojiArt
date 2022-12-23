@@ -22,7 +22,7 @@ struct EmojiArtDocumentView: View {
     var documentBody: some View {
         GeometryReader { geometry in
             ZStack {
-                Color.gray.brightness(0.39).overlay(
+                Color.gray.brightness(0.39).cornerRadius(20).overlay(
                     OptionalImage(uiImage: document.backgroundImage)
                         .scaleEffect(zoomScale)
                         .position(converFromEmojiCoordinates((0,0), in: geometry))
