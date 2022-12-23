@@ -123,8 +123,10 @@ class EmojiArtDocument: ReferenceFileDocument
     private func undoablyPerform(operation: String,  with undoManager: UndoManager? = nil, doit:() -> Void) {
         let oldEmojiArt = emojiArt
         doit()
-        undoManager?.registerUndo(withTarget: self) { myself in
-            myself.emojiArt = oldEmojiArt
+        undoManager?.registerUndo(withTarget: self) { myself in // As Undo 
+            myself.undoablyPerform(operation: operation, with: undoManager) {   // As Redo
+                myself.emojiArt = oldEmojiArt
+            }
         }
         undoManager?.setActionName(operation)
     }
