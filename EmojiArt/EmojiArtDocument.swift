@@ -96,25 +96,32 @@ class EmojiArtDocument: ReferenceFileDocument
     
     // MARK: - Intent(s)
     
-    func setBackground(_ background: EmojiArtModel.Background) {
-        return emojiArt.background = background
-    }
-    
-    func addEmoji(_ emoji: String, at location: (x: Int, y: Int), size: CGFloat) {
-        emojiArt.addEmoji(emoji, at: location, size: Int(size))
-    }
-    
-    func moveEmoji(_ emoji: EmojiArtModel.Emoji, by offset: CGSize) {
-        if let index = emojiArt.emojis.index(matching: emoji) {
-            emojiArt.emojis[index].x += Int(offset.width)
-            emojiArt.emojis[index].y += Int(offset.height)
+    func setBackground(_ background: EmojiArtModel.Background, undoManager: UndoManager?) {
+        undoablyPerform(operation: "Set Background", with: undoManager) {
+            return emojiArt.background = background
         }
     }
     
-    func scaleEmoji(_ emoji: EmojiArtModel.Emoji, by scale: CGFloat) {
+    func addEmoji(_ emoji: String, at location: (x: Int, y: Int), size: CGFloat, undoManager: UndoManager?) {
+        undoablyPerform(operation: "Add \(emoji)", with: undoManager) {
+            emojiArt.addEmoji(emoji, at: location, size: Int(size))
+        }
+    }
+    
+    func moveEmoji(_ emoji: EmojiArtModel.Emoji, by offset: CGSize, undoManager: UndoManager?) {
         if let index = emojiArt.emojis.index(matching: emoji) {
-            emojiArt.emojis[index].size = Int(CGFloat(emojiArt.emojis[index].size) * scale.rounded(.toNearestOrAwayFromZero))
-            
+            undoablyPerform(operation: "Move", with: undoManager) {
+                emojiArt.emojis[index].x += Int(offset.width)
+                emojiArt.emojis[index].y += Int(offset.height)
+            }
+        }
+    }
+    
+    func scaleEmoji(_ emoji: EmojiArtModel.Emoji, by scale: CGFloat, undoManager: UndoManager?) {
+        if let index = emojiArt.emojis.index(matching: emoji) {
+            undoablyPerform(operation: "Scale", with: undoManager) {
+                emojiArt.emojis[index].size = Int(CGFloat(emojiArt.emojis[index].size) * scale.rounded(.toNearestOrAwayFromZero))
+            }
         }
     }
     
@@ -123,7 +130,7 @@ class EmojiArtDocument: ReferenceFileDocument
     private func undoablyPerform(operation: String,  with undoManager: UndoManager? = nil, doit:() -> Void) {
         let oldEmojiArt = emojiArt
         doit()
-        undoManager?.registerUndo(withTarget: self) { myself in // As Undo 
+        undoManager?.registerUndo(withTarget: self) { myself in // As Undo
             myself.undoablyPerform(operation: operation, with: undoManager) {   // As Redo
                 myself.emojiArt = oldEmojiArt
             }
