@@ -16,11 +16,11 @@ extension UTType {
 class EmojiArtDocument: ReferenceFileDocument
 {
     func snapshot(contentType: UTType) throws -> Data {
-        return try emojiArt.json()
+        try emojiArt.json()
     }
     
     func fileWrapper(snapshot: Data, configuration: WriteConfiguration) throws -> FileWrapper {
-        return FileWrapper(regularFileWithContents: snapshot)
+        FileWrapper(regularFileWithContents: snapshot)
     }
     
     typealias Snapshot = Data
@@ -39,57 +39,14 @@ class EmojiArtDocument: ReferenceFileDocument
     
     @Published private(set) var emojiArt: EmojiArtModel {
         didSet {    // Super important, to check our model wether any values had been changed to make it have effect on our UI.
-//            scheduleAutosave()
             if emojiArt.background != oldValue.background {
                 fetchBackgroundDataIfNecessary()
             }
         }
     }
     
-//    private var autosaveTimer: Timer?
-//
-//    private func scheduleAutosave() {
-//        autosaveTimer?.invalidate()
-//        autosaveTimer = Timer.scheduledTimer(withTimeInterval: Autosave.coalescingInterval, repeats: false) { _ in
-//            self.autosave() // [weak self] is not used, we want self to be held on memory even if the app is closed, otherwise saving won't happen
-//        }
-//    }
-//
-//    private struct Autosave { // Constants struct, usded for staticts
-//        static let filename = "Autosaved.emojiart"
-//        static var url: URL? {
-//            let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first // .first is used on the behalf of the fact that only one folder is used for directory in iOS,
-//            return documentDirectory?.appendingPathComponent(filename)
-//        }
-//            static let coalescingInterval = 6.0
-//    }
-//
-//    private func autosave() {
-//        if let url = Autosave.url {
-//            save(to: url)
-//        }
-//    }
-//
-//    private func save(to url: URL) {
-//        let thisfunction = "\(String(describing: self)).\(#function)"
-//        do {
-//            let data: Data = try emojiArt.json()
-//            print("\(thisfunction) JSON = \(String(data: data, encoding: .utf8) ?? "nil")")
-//            try? data.write(to: url)
-//        } catch let encodingError where encodingError is EncodingError {
-//            print("\(thisfunction) couldn't encode EmojiArt as JSON because \(encodingError.localizedDescription)")
-//        } catch let error {
-//            print("\(thisfunction) error = \(error)")
-//        }
-//    }
-    
     init() {
-//        if let url = Autosave.url, let AutosavedEmojiArt = try? EmojiArtModel(url: url) {
-//            emojiArt = AutosavedEmojiArt
-//            fetchBackgroundDataIfNecessary()
-//        } else {
-            emojiArt = EmojiArtModel()
-//        }
+        emojiArt = EmojiArtModel() // Create an empty init with the Model
     }
     
     var emojis: [EmojiArtModel.Emoji] { emojiArt.emojis }
