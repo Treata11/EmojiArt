@@ -76,6 +76,7 @@ struct PaletteChooser : View {
         // Fix me!
         .popover(item: $paletteToEdit) { palette in
             PaletteEditor(palette: $store.palettes[palette])
+                .wrappedInNavigationViewToMakeDismissable { paletteToEdit = nil  }
         }
         .transition(rollTransition)
         .sheet(isPresented: $managing) {
