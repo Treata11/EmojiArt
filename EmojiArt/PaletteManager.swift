@@ -34,17 +34,10 @@ struct PaletteManager: View {
             }
             .navigationTitle("Manage Palettes")
             .navigationBarTitleDisplayMode(.inline)
+            .dismissable { presentationMode.wrappedValue.dismiss() }
             .toolbar {
                 ToolbarItem {
                     EditButton()    // Toggles the value of editMode in its environment
-                }
-                ToolbarItem(placement: .cancellationAction) {
-                    if presentationMode.wrappedValue.isPresented,
-                        UIDevice.current.userInterfaceIdiom != .pad {   // Not to be shown on iPads 
-                        Button("Close") {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    }
                 }
             }
             .environment(\.editMode, $editMode) // A binding EnvironmentValue
