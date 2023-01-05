@@ -158,3 +158,13 @@ extension View {
     }
 }
 
+struct CompactableIntoContextMenu: ViewModifier {
+    
+    func body(content: Content) -> some View {
+        if compact {
+            // return a single button with a context menu containing content
+        } else {
+            content
+        }
+    }
+}
