@@ -77,7 +77,7 @@ struct UndoButton: View {
     var body: some View {
         let canUndo = undoManager?.canUndo ?? false
         let canRedo = undoManager?.canRedo ?? false
-        if canUndo || canRedo {
+        if canUndo || canRedo {  
             Button {
                 if canUndo {
                     undoManager?.undo()
@@ -157,3 +157,4 @@ extension View {
         }
     }
 }
+

@@ -38,7 +38,7 @@ struct PaletteManager: View {
                 ToolbarItem {
                     EditButton()    // Toggles the value of editMode in its environment
                 }
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     if presentationMode.wrappedValue.isPresented,
                         UIDevice.current.userInterfaceIdiom != .pad {   // Not to be shown on iPads 
                         Button("Close") {
