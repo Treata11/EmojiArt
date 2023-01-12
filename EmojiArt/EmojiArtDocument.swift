@@ -117,7 +117,7 @@ class EmojiArtDocument: ReferenceFileDocument
         }
     }
     
-    func scaleEmoji(_ emoji: EmojiArtModel.Emoji, by scale: CGFloat, undoManager: UndoManager?) {
+    func scaleEmoji(_ emoji: EmojiArtModel.Emoji, by scale: CGFloat, undoManager: UndoManager? ) {
         if let index = emojiArt.emojis.index(matching: emoji) {
             undoablyPerform(operation: "Scale", with: undoManager) {
                 emojiArt.emojis[index].size = Int(CGFloat(emojiArt.emojis[index].size) * scale.rounded(.toNearestOrAwayFromZero))

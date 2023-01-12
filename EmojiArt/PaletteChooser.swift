@@ -80,7 +80,7 @@ struct PaletteChooser : View {
         }
         .transition(rollTransition)
         .sheet(isPresented: $managing) {
-            PaletteManager()
+            PaletteManager() 
         }
     }
     
