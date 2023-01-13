@@ -65,8 +65,10 @@ struct EmojiArtDocumentView: View {
                 AnimatedActionButton(title: "Paste Background", systemImage: "doc.on.clipboard") {
                     pasteBackground()
                 }
-                AnimatedActionButton(title: "Camera", systemImage: "camera") {
-                    backgroundPicker = .camera
+                if Camera.isAvailable {
+                    AnimatedActionButton(title: "Camera", systemImage: "camera") {
+                        backgroundPicker = .camera
+                    }
                 }
                 if let undoManager = undoManager {
                     if undoManager.canUndo {
@@ -93,7 +95,11 @@ struct EmojiArtDocumentView: View {
     }
     
     private func handlePickedBackgroundImage(_ image: UIImage?) {
-        
+        autozoom = true
+        if let imageData = image?.jpegData(compressionQuality: 1.0) {
+            document.setBackground(.imageData(imageData), undoManager: undoManager)
+        }
+        backgroundPicker = nil
     }
     
     @State private var backgroundPicker: BackgroundPickerType?
@@ -101,10 +107,11 @@ struct EmojiArtDocumentView: View {
     enum BackgroundPickerType: String, Identifiable {
         case camera
         case library
-        var id: String { self }
+        var id: String { rawValue }
     }
     
     private func pasteBackground() {
+        autozoom = true
         if let imageData = UIPasteboard.general.image?.jpegData(compressionQuality: 1.0) {
             document.setBackground(.imageData(imageData), undoManager: undoManager)
         } else if let url = UIPasteboard .general.url?.imageURL {
