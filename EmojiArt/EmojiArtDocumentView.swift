@@ -70,6 +70,11 @@ struct EmojiArtDocumentView: View {
                         backgroundPicker = .camera
                     }
                 }
+                if PhotoLibrary.isAvailable {
+                    AnimatedActionButton(title: "Search Photo", systemImage: "photo") {
+                        backgroundPicker = .library
+                    }
+                }
                 if let undoManager = undoManager {
                     if undoManager.canUndo {
                         AnimatedActionButton(title: undoManager.undoActionName, systemImage: "arrow.uturn.backward") {
@@ -88,7 +93,7 @@ struct EmojiArtDocumentView: View {
             sheet(item: $backgroundPicker) { pickerType in
                 switch pickerType {
                 case .camera: Camera(handlePickedImage: { image in handlePickedBackgroundImage(image) })
-                case .library: photoLibrary(handlePickedimage: { image in handlePickedBackgroundImage(image) })
+                case .library: PhotoLibrary(handlePickedImage: { image in handlePickedBackgroundImage(image) })
                 }
             }
         }

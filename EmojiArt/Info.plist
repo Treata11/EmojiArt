@@ -41,7 +41,9 @@
 		</dict>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string></string>
+	<string>Camera can be used to set the background of an EmojiArt document.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo Library can be used to set the background of an EmojiArt document.</string>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>

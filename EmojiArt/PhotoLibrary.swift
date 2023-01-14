@@ -8,10 +8,10 @@
 import SwiftUI
 import PhotosUI
 
-struct photoLibrary: UIViewControllerRepresentable {
+struct PhotoLibrary: UIViewControllerRepresentable {
     var handlePickedImage: (UIImage?) -> Void
     
-    var isAvailable: Bool {
+    static var isAvailable: Bool {
         return true
     }
     
