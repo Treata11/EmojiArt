@@ -66,7 +66,7 @@ struct EmojiArtDocumentView: View {
                     pasteBackground()
                 }
                 if Camera.isAvailable {
-                    AnimatedActionButton(title: "Camera", systemImage: "camera") {
+                    AnimatedActionButton(title: "Take Photo", systemImage: "camera") {
                         backgroundPicker = .camera
                     }
                 }
@@ -88,7 +88,7 @@ struct EmojiArtDocumentView: View {
             sheet(item: $backgroundPicker) { pickerType in
                 switch pickerType {
                 case .camera: Camera(handlePickedImage: { image in handlePickedBackgroundImage(image) })
-                case .library: EmptyView()
+                case .library: photoLibrary(handlePickedimage: { image in handlePickedBackgroundImage(image) })
                 }
             }
         }
