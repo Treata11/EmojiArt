@@ -16,6 +16,7 @@ struct EmojiArtModel: Encodable, Decodable {
         var x: Int
         var y: Int
         var size: Int
+//        var isSelected: Bool
         let id: Int
         
         fileprivate init(text: String, x: Int, y: Int, size: Int, id: Int) {

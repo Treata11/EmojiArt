@@ -142,6 +142,8 @@ struct EmojiArtDocumentView: View {
     
     // MARK: - Drag & Drop
     
+    @State var isSelected = false
+    
     private func drop(providers: [NSItemProvider], at location: CGPoint, in geometry: GeometryProxy) -> Bool {
         var found = providers.loadObjects(ofType: URL.self) { url in
             autozoom = true
@@ -213,6 +215,20 @@ struct EmojiArtDocumentView: View {
             }
     }
     
+    private func selectEmojiGesture() -> some Gesture {
+        LongPressGesture(minimumDuration: 0.5)
+            .onEnded { _ in
+                isSelected = true
+            }
+    }
+    
+    private func deselectEmojiGesture() -> some Gesture {
+        return TapGesture(count: 1)
+            .onEnded {
+                isSelected = false
+            }
+    }
+    
     // MARK: - Zooming
     @SceneStorage("EmojiArtDocumentView.steadyStateZoomState")
     private var steadyStateZoomScale: CGFloat = 1
@@ -252,29 +268,7 @@ struct EmojiArtDocumentView: View {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// MARK: - Preview(s)
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
