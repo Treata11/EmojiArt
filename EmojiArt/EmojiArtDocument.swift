@@ -54,7 +54,6 @@ class EmojiArtDocument: ReferenceFileDocument
     var emojis: [EmojiArtModel.Emoji] { emojiArt.emojis }
     var background: EmojiArtModel.Background { emojiArt.background }
     
-    
     // MARK: - Background
     
     @Published var backgroundImage: UIImage?
