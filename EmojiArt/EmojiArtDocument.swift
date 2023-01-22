@@ -15,7 +15,7 @@ extension UTType {
 
 class EmojiArtDocument: ReferenceFileDocument
 {
-    // MARK: Read&Write
+    // MARK: - Read&Write
     
     func snapshot(contentType: UTType) throws -> Data {
         try emojiArt.json()
@@ -40,7 +40,7 @@ class EmojiArtDocument: ReferenceFileDocument
     }
     
     @Published private(set) var emojiArt: EmojiArtModel {
-        didSet {    // Super important, to check our model wether any values had been changed to make it have effect on our UI.
+        didSet {    // Super important, to check our model whether any values had been changed to make it have effect on our UI.
             if emojiArt.background != oldValue.background {
                 fetchBackgroundDataIfNecessary()
             }
@@ -55,7 +55,7 @@ class EmojiArtDocument: ReferenceFileDocument
     var background: EmojiArtModel.Background { emojiArt.background }
     
     
-    // MARK: Background
+    // MARK: - Background
     
     @Published var backgroundImage: UIImage?
     @Published var backgroundImageFetchStatus = backgroundImageFetchStatus.idle
@@ -93,7 +93,6 @@ class EmojiArtDocument: ReferenceFileDocument
         }
     }
     
-    
     // MARK: - Intent(s)
     
     func setBackground(_ background: EmojiArtModel.Background, undoManager: UndoManager?) {
@@ -125,7 +124,7 @@ class EmojiArtDocument: ReferenceFileDocument
         }
     }
     
-    // MARK: -Undo
+    // MARK: - Undo
     
     private func undoablyPerform(operation: String,  with undoManager: UndoManager? = nil, doit:() -> Void) {
         let oldEmojiArt = emojiArt

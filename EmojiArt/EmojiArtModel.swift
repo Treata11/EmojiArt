@@ -13,8 +13,8 @@ struct EmojiArtModel: Encodable, Decodable {
     
     struct Emoji: Identifiable, Hashable, Codable {
         let text: String
-        var x: Int  // offset from center
-        var y: Int  // offset from center
+        var x: Int
+        var y: Int
         var size: Int
         let id: Int
         
@@ -40,7 +40,8 @@ struct EmojiArtModel: Encodable, Decodable {
         self = try EmojiArtModel(json: data)
     }
     
-    init() { }  //returning void representing that former init is for access control and not a free init
+    // returning void representing that former init is for access control and not a free init
+    init() { }
     
     private var uniqueEmojiId = 0
     mutating func addEmoji(_ text: String, at location: (x: Int, y: Int), size: Int) {
