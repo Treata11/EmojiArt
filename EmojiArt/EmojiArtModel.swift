@@ -16,14 +16,15 @@ struct EmojiArtModel: Encodable, Decodable {
         var x: Int
         var y: Int
         var size: Int
-//        var isSelected: Bool
+        var isSelected: Bool?
         let id: Int
         
-        fileprivate init(text: String, x: Int, y: Int, size: Int, id: Int) {
+        fileprivate init(text: String, x: Int, y: Int, size: Int, isSelected: Bool?, id: Int) {
             self.text = text
             self.x = x
             self.y = y
             self.size = size
+            self.isSelected = isSelected
             self.id = id
         }
     }
@@ -47,6 +48,6 @@ struct EmojiArtModel: Encodable, Decodable {
     private var uniqueEmojiId = 0
     mutating func addEmoji(_ text: String, at location: (x: Int, y: Int), size: Int) {
         uniqueEmojiId += 1
-        emojis.append(Emoji(text: text, x: location.x, y: location.y, size: size, id: uniqueEmojiId))
+        emojis.append(Emoji(text: text, x: location.x, y: location.y, size: size, isSelected: nil, id: uniqueEmojiId))
     }
 }

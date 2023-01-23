@@ -56,7 +56,7 @@ struct PaletteManager: View {
 struct PaletteManager_Previews: PreviewProvider {
     static var previews: some View {
         PaletteManager()
-            .previewDevice("iP hone 14")
+            .previewDevice("iPhone 14")
             .environmentObject(PaletteStore(named: "Preview"))
     }
 }
