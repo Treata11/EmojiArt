@@ -213,6 +213,8 @@ struct EmojiArtDocumentView: View {
             }
     }
     
+    @State var selectedEmojis = Set<EmojiArtModel.Emoji>()
+    
     private func selectEmojiGesture() -> some Gesture {
         LongPressGesture(minimumDuration: 0.5)
             .onEnded { finished in

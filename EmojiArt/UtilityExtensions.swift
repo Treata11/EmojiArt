@@ -251,7 +251,7 @@ extension Array where Element == NSItemProvider {
 // An extension to array (could be implemented for RangRepraceableCollection & etc.)
 // to check whether an array isEmpty or not
 
-extension Array {
+extension Collection {
     func hasAnyValue() -> Bool {
         if self.isEmpty == false {
             return true
@@ -261,4 +261,20 @@ extension Array {
     }
 }
 
+// According to Assignment_5:
+// adding a toggleMatching function via extension
+//(that adds/removes an element to/from the Set based on whether it’s already there based on Identifiable)
+// might be nice.
+// It would be nice; if the Developer choose to use the same gesture (i.e. tap gesture)
+// to select and deselect an emoji from the screen. That is not what I intent to do
+
+extension Set where Element: Identifiable {
+    mutating func toggleMatching(element: Element) -> Void {
+        if let index = index(matching: element) {
+            self.remove(at: index)
+        } else {
+            self.insert(element)
+        }
+    }
+}
     
