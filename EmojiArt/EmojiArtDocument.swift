@@ -115,7 +115,7 @@ class EmojiArtDocument: ReferenceFileDocument
         }
     }
     
-    func scaleEmoji(_ emoji: EmojiArtModel.Emoji, by scale: CGFloat, undoManager: UndoManager? ) {
+    func scaleEmoji(_ emoji: EmojiArtModel.Emoji, by scale: CGFloat, undoManager: UndoManager?) {
         if let index = emojiArt.emojis.index(matching: emoji) {
             undoablyPerform(operation: "Scale", with: undoManager) {
                 emojiArt.emojis[index].size = Int(CGFloat(emojiArt.emojis[index].size) * scale.rounded(.toNearestOrAwayFromZero))
@@ -133,6 +133,14 @@ class EmojiArtDocument: ReferenceFileDocument
 //                if emojiArt.emojis[index].size != 0 {
 //                    emojiArt.emojis[index].isSelected = true
 //                }
+//            }
+//        }
+//    }
+    
+//    func selectEmoji(emoji: EmojiArtModel.Emoji, undoManager: UndoManager?) {
+//        if let index = emojiArt.emojis.index(matching: emoji) {
+//            undoablyPerform(operation: "Scale", with: undoManager) {
+//                let id = Int(emojiArt.emojis[index].id)
 //            }
 //        }
 //    }

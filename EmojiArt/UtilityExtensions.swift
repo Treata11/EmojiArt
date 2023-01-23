@@ -269,11 +269,23 @@ extension Collection {
 // to select and deselect an emoji from the screen. That is not what I intent to do
 
 extension Set where Element: Identifiable {
-    mutating func toggleMatching(element: Element) -> Void {
+    mutating func toggleMatching(_ element: Element) -> Void {
         if let index = index(matching: element) {
             self.remove(at: index)
         } else {
             self.insert(element)
+        }
+    }
+}
+
+// Same func for the case that the elements of the Set are Integers
+
+extension Set where Element == Int {
+    mutating func toggleMatching(_ element: Element) -> Void {
+        if self.contains(element) {
+            remove(element)
+        } else {
+            insert(element)
         }
     }
 }
