@@ -127,15 +127,15 @@ class EmojiArtDocument: ReferenceFileDocument
     // on the document's View and not the palette, we don't want this func to trigger for emojis in
     // the palette
     
-    func selectEmoji(emoji: EmojiArtModel.Emoji, size: CGFloat, undoManager: UndoManager?) {
-        if let index = emojiArt.emojis.index(matching: emoji) {
-            undoablyPerform(operation: "Select", with: undoManager) {
-                if emojiArt.emojis[index].size != 0 {
-                    emojiArt.emojis[index].isSelected = true
-                }
-            }
-        }
-    }
+//    func selectEmoji(emoji: EmojiArtModel.Emoji, size: CGFloat, undoManager: UndoManager?) {
+//        if let index = emojiArt.emojis.index(matching: emoji) {
+//            undoablyPerform(operation: "Select", with: undoManager) {
+//                if emojiArt.emojis[index].size != 0 {
+//                    emojiArt.emojis[index].isSelected = true
+//                }
+//            }
+//        }
+//    }
     
     // MARK: - Undo
     
@@ -151,4 +151,6 @@ class EmojiArtDocument: ReferenceFileDocument
     }
 }
 
+var arr = [1, 5, 8]
 
+var count = arr.count

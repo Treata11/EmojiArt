@@ -216,10 +216,8 @@ struct EmojiArtDocumentView: View {
     private func selectEmojiGesture() -> some Gesture {
         LongPressGesture(minimumDuration: 0.5)
             .onEnded { finished in
-                if document.emojis.isEmpty == false {
-                    ForEach(document.emojis) { emoji in
-                        document.selectEmoji(emoji: emoji, size: defaultEmojiFontSize / zoomScale, undoManager: undoManager)
-                    }
+                if document.emojis.hasAnyValue() {
+                    
                 }
             }
     }
@@ -227,7 +225,7 @@ struct EmojiArtDocumentView: View {
     private func deselectEmojiGesture() -> some Gesture {
         return TapGesture(count: 1)
             .onEnded {
-                isSelected = false
+                
             }
     }
     

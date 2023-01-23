@@ -247,3 +247,18 @@ extension Array where Element == NSItemProvider {
         loadObjects(ofType: theType, firstOnly: true, using: load)
     }
 }
+
+// An extension to array (could be implemented for RangRepraceableCollection & etc.)
+// to check whether an array isEmpty or not
+
+extension Array {
+    func hasAnyValue() -> Bool {
+        if self.isEmpty == false {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
+    
