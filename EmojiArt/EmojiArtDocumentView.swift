@@ -213,7 +213,7 @@ struct EmojiArtDocumentView: View {
             }
     }
     
-    // MARK: - Select/Deselect/Unselect Emojis
+// MARK: - Select/Deselect/Unselect Emojis
     
     @State private var selectedEmojisID = Set<EmojiArtModel.Emoji.ID>()
     
@@ -228,8 +228,9 @@ struct EmojiArtDocumentView: View {
     private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
         LongPressGesture(minimumDuration: 0.5)
             .onEnded { finished in
-//               selectedEmojisID.toggleMatching(emoji.id)
-                selectedEmojisID.insert(emoji.id)
+                withAnimation {
+                    selectedEmojisID.toggleMatching(emoji.id)
+                }
             }
     }
     
@@ -291,6 +292,6 @@ struct EmojiArtDocumentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         EmojiArtDocumentView(document: EmojiArtDocument())
-            .previewInterfaceOrientation(.portraitUpsideDown)
+            .previewInterfaceOrientation(.portrait)
     }
 }

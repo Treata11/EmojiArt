@@ -7,17 +7,14 @@
 
 import Foundation
 
-struct EmojiArtModel: Encodable, Decodable {
-    var emojis = [Emoji]()
+struct EmojiArtModel: Codable {
     var background = Background.blank
-    
-    // returning void representing that former init is for access control and not a free init
-    init() { }
+    var emojis = [Emoji]()
     
     struct Emoji: Identifiable, Hashable, Codable {
         let text: String
-        var x: Int
-        var y: Int
+        var x: Int // offset from the center
+        var y: Int // offset from the center
         var size: Int
         let id: Int
         
@@ -42,6 +39,8 @@ struct EmojiArtModel: Encodable, Decodable {
         let data = try Data(contentsOf: url)
         self = try EmojiArtModel(json: data)
     }
+    
+    init() { }
     
     private var uniqueEmojiId = 0
     
