@@ -248,19 +248,6 @@ extension Array where Element == NSItemProvider {
     }
 }
 
-// An extension to array (could be implemented for RangRepraceableCollection & etc.)
-// to check whether an array isEmpty or not
-
-extension Collection {
-    func hasAnyValue() -> Bool {
-        if self.isEmpty == false {
-            return true
-        } else {
-            return false
-        }
-    }
-}
-
 // According to Assignment_5:
 // adding a toggleMatching function via extension
 //(that adds/removes an element to/from the Set based on whether it’s already there based on Identifiable)
