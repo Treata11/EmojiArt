@@ -75,19 +75,19 @@
 			isa = PBXGroup;
 			children = (
 				61CFCB3F2970B28C00FE690C /* Camera.swift */,
-				61FD4D6F2954A7C800BDAE29 /* Info.plist */,
+				619D8075297287F0002B0576 /* PhotoLibrary.swift */,
 				6177CC302937B6F500A161DF /* PaletteManager.swift */,
 				615B5E5029312BBE00A9D349 /* PaletteEditor.swift */,
 				61524F92292F9BC5001DA6CD /* PaletteChooser.swift */,
 				61B2A42C291419A3005ED53A /* PaletteStore.swift */,
 				619190C228F039D9007F88FF /* EmojiArtApp.swift */,
 				619190C428F039D9007F88FF /* EmojiArtDocumentView.swift */,
-				619D8075297287F0002B0576 /* PhotoLibrary.swift */,
 				6162948628F03D100063B67A /* EmojiArtModel.swift */,
 				6162948A28F048ED0063B67A /* EmojiArtDocument.swift */,
 				6162948828F043EB0063B67A /* EmojiArtModel.Background.swift */,
 				610F405328F0B21000350F51 /* UtilityExtensions.swift */,
 				61A23DA928F9907E0034BE14 /* UtilityViews.swift */,
+				61FD4D6F2954A7C800BDAE29 /* Info.plist */,
 				619190C628F039D9007F88FF /* Assets.xcassets */,
 				619190C828F039D9007F88FF /* Preview Content */,
 			);

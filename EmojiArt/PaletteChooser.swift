@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct PaletteChooser: View {
+struct PaletteChooser : View {
     var emojiFontSize: CGFloat = 40
     var emojiFont: Font { .system(size: emojiFontSize) }
     
     @EnvironmentObject var store: PaletteStore
     
     @SceneStorage("PaletteChooser.chosenPaletteIndex")
-    private var chosenPaletteIndex = 0
+    var chosenPaletteIndex = 0
     
     var body: some View {
         HStack {
@@ -26,14 +26,11 @@ struct PaletteChooser: View {
     
     var paletteControlButton: some View {
         Button {
-            withAnimation {
-                chosenPaletteIndex = (chosenPaletteIndex + 1) % store.palettes.count
-            }
+            chosenPaletteIndex = (chosenPaletteIndex + 1) % store.palettes.count
         } label: {
             Image(systemName: "paintpalette")
         }
         .font(emojiFont)
-        .paletteControlButtonStyle() // L16 see macOS.swift
         .contextMenu { contextMenu }
     }
     
@@ -47,18 +44,15 @@ struct PaletteChooser: View {
             paletteToEdit = store.palette(at: chosenPaletteIndex)
         }
         AnimatedActionButton(title: "Delete", systemImage: "minus.circle") {
-            chosenPaletteIndex = store.removePalette(at: chosenPaletteIndex)
+           chosenPaletteIndex = store.removePalette(at: chosenPaletteIndex)
         }
-        // L16 no EditMode on macOS, so no PaletteManager
-        #if os(iOS)
         AnimatedActionButton(title: "Manager", systemImage: "slider.vertical.3") {
-            managing = true
+           managing = true
         }
-        #endif
-        gotoMenu
+        goToMenu
     }
     
-    var gotoMenu: some View {
+    var goToMenu: some View {
         Menu {
             ForEach (store.palettes) { palette in
                 AnimatedActionButton(title: palette.name) {
@@ -67,8 +61,8 @@ struct PaletteChooser: View {
                     }
                 }
             }
-        } label: {
-            Label("Go To", systemImage: "text.insert")
+    } label: {
+        Label("Go To", systemImage: "text.insert")
         }
     }
     
@@ -78,38 +72,36 @@ struct PaletteChooser: View {
             ScrollingEmojisView(emojis: palette.emojis)
                 .font(emojiFont)
         }
-        .id(palette.id)
-        .transition(rollTransition)
+        .id(palette.id) // To make the transition function, to make the oldView go away instead of updating to make transition happen
+        // Fix me!
         .popover(item: $paletteToEdit) { palette in
             PaletteEditor(palette: $store.palettes[palette])
-                // L16 see macOS.swift
-                .popoverPadding()
-                // L15 make this popover dismissable with a Close button on iPhone
-                .wrappedInNavigationViewToMakeDismissable { paletteToEdit = nil }
+                .wrappedInNavigationViewToMakeDismissable { paletteToEdit = nil  }
         }
+        .transition(rollTransition)
         .sheet(isPresented: $managing) {
-            PaletteManager()
+            PaletteManager() 
         }
     }
-        
-    @State private var managing = false
+    
     @State private var paletteToEdit: Palette?
+    @State private var managing = false
     
     var rollTransition: AnyTransition {
         AnyTransition.asymmetric(
             insertion: .offset(x: 0, y: emojiFontSize),
             removal: .offset(x: 0, y: -emojiFontSize)
-        )
+            )
     }
 }
 
 struct ScrollingEmojisView: View {
     let emojis: String
-
+    
     var body: some View {
         ScrollView(.horizontal) {
             HStack {
-                ForEach(emojis.removingDuplicateCharacters.map { String($0) }, id: \.self) { emoji in
+                ForEach(emojis.removingDuplicateCharacters.map {String($0)}, id: \.self) { emoji in
                     Text(emoji)
                         .onDrag { NSItemProvider(object: emoji as NSString) }
                 }
@@ -118,8 +110,9 @@ struct ScrollingEmojisView: View {
     }
 }
 
-struct PaletteChooser_Previews: PreviewProvider {
+
+struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        PaletteChooser()
+        PaletteChooser ()
     }
 }
