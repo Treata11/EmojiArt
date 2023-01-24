@@ -11,7 +11,7 @@ struct PaletteManager: View {
     @EnvironmentObject var store: PaletteStore
     @Environment(\.presentationMode) var presentationMode
     
-    @State var editMode: EditMode = .inactive
+    @State private var editMode: EditMode = .inactive
     
     var body: some View {
         NavigationView {
@@ -19,7 +19,7 @@ struct PaletteManager: View {
                 ForEach(store.palettes) { palette in
                     NavigationLink(destination: PaletteEditor(palette: $store.palettes[palette])) {
                         VStack(alignment: .leading) {
-                            Text(palette.name).font(editMode == .active ? .title2 : .subheadline)
+                            Text(palette.name)
                             Text(palette.emojis)
                         }
                         .gesture(editMode == .active ? tap : nil)
@@ -36,27 +36,22 @@ struct PaletteManager: View {
             .navigationBarTitleDisplayMode(.inline)
             .dismissable { presentationMode.wrappedValue.dismiss() }
             .toolbar {
-                ToolbarItem {
-                    EditButton()    // Toggles the value of editMode in its environment
-                }
+                ToolbarItem { EditButton() }
             }
-            .environment(\.editMode, $editMode) // A binding EnvironmentValue
+            .environment(\.editMode, $editMode)
         }
     }
     
-    // MARK: - Assignment
-
     var tap: some Gesture {
-        TapGesture().onEnded {
-            // Feature to bring up a UI to edit themes
-        }
+        TapGesture().onEnded { }
     }
 }
 
 struct PaletteManager_Previews: PreviewProvider {
     static var previews: some View {
         PaletteManager()
-            .previewDevice("iP hone 14")
+            .previewDevice("iPhone 14 Pro Max")
             .environmentObject(PaletteStore(named: "Preview"))
+            .preferredColorScheme(.light)
     }
 }

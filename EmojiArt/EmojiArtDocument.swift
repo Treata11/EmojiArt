@@ -10,12 +10,22 @@ import Combine
 import UniformTypeIdentifiers
 
 extension UTType {
-    static var emojiart = UTType(exportedAs: "stanford.cs193p.emojiart")
+    static let emojiart = UTType(exportedAs: "stanford.cs193p.emojiart")
 }
 
 class EmojiArtDocument: ReferenceFileDocument
 {
-    // MARK: Read&Write
+    static var readableContentTypes = [UTType.emojiart]
+    static var writeableContentTypes = [UTType.emojiart]
+
+    required init(configuration: ReadConfiguration) throws {
+        if let data = configuration.file.regularFileContents {
+            emojiArt = try EmojiArtModel(json: data)
+            fetchBackgroundImageDataIfNecessary()
+        } else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+    }
     
     func snapshot(contentType: UTType) throws -> Data {
         try emojiArt.json()
@@ -24,43 +34,28 @@ class EmojiArtDocument: ReferenceFileDocument
     func fileWrapper(snapshot: Data, configuration: WriteConfiguration) throws -> FileWrapper {
         FileWrapper(regularFileWithContents: snapshot)
     }
-    
-    typealias Snapshot = Data
-    
-    static var readableContentTypes = [UTType.emojiart]
-    static var writableContentTypes = [UTType.emojiart]
-    
-    required init(configuration: ReadConfiguration) throws {
-        if let data = configuration.file.regularFileContents {
-            emojiArt = try EmojiArtModel(json: data)
-            fetchBackgroundDataIfNecessary()
-        } else {
-            throw CocoaError(.fileReadCorruptFile)
-        }
-    }
-    
+        
     @Published private(set) var emojiArt: EmojiArtModel {
-        didSet {    // Super important, to check our model wether any values had been changed to make it have effect on our UI.
+        didSet {
             if emojiArt.background != oldValue.background {
-                fetchBackgroundDataIfNecessary()
+                fetchBackgroundImageDataIfNecessary()
             }
         }
     }
     
     init() {
-        emojiArt = EmojiArtModel() // Create an empty init with the Model
+        emojiArt = EmojiArtModel()
     }
     
     var emojis: [EmojiArtModel.Emoji] { emojiArt.emojis }
     var background: EmojiArtModel.Background { emojiArt.background }
     
-    
-    // MARK: Background
+    // MARK: - Background
     
     @Published var backgroundImage: UIImage?
-    @Published var backgroundImageFetchStatus = backgroundImageFetchStatus.idle
+    @Published var backgroundImageFetchStatus = BackgroundImageFetchStatus.idle
     
-    enum backgroundImageFetchStatus: Equatable {
+    enum BackgroundImageFetchStatus: Equatable {
         case idle
         case fetching
         case failed(URL)
@@ -68,24 +63,23 @@ class EmojiArtDocument: ReferenceFileDocument
     
     private var backgroundImageFetchCancellable: AnyCancellable?
     
-    private func fetchBackgroundDataIfNecessary() {
+    private func fetchBackgroundImageDataIfNecessary() {
         backgroundImage = nil
         switch emojiArt.background {
         case .url(let url):
-            self.backgroundImageFetchStatus = .fetching
-            backgroundImageFetchCancellable?.cancel()   // To cancle any previous thread trying to fetch the UIImage
+            // fetch the url
+            backgroundImageFetchStatus = .fetching
+            backgroundImageFetchCancellable?.cancel()
             let session = URLSession.shared
-            let publisher = session.dataTaskPublisher(for: url) // Get the session's dataTaskPublisher in this case $projectedValue == Publisher; the var's type is IMP
-                .map { (data, urlResponse) in UIImage(data: data) } // Taking the publisher's data as an UIImage and ignoring the urlResponse of publisher's tuple
-                .replaceError(with: nil)    // Replace any error with the ```UIImage  = nil```
-                .receive(on: DispatchQueue.main)    // .sink "part of the UI" has to happen on the mainQueue
+            let publisher = session.dataTaskPublisher(for: url)
+                .map { (data, urlResponse) in UIImage(data: data) }
+                .replaceError(with: nil)
+                .receive(on: DispatchQueue.main)
             backgroundImageFetchCancellable = publisher
                 .sink { [weak self] image in
                     self?.backgroundImage = image
                     self?.backgroundImageFetchStatus = (image != nil) ? .idle : .failed(url)
                 }
- 
-             
         case .imageData(let data):
             backgroundImage = UIImage(data: data)
         case .blank:
@@ -93,12 +87,11 @@ class EmojiArtDocument: ReferenceFileDocument
         }
     }
     
-    
     // MARK: - Intent(s)
     
     func setBackground(_ background: EmojiArtModel.Background, undoManager: UndoManager?) {
         undoablyPerform(operation: "Set Background", with: undoManager) {
-            return emojiArt.background = background
+            emojiArt.background = background
         }
     }
     
@@ -117,26 +110,27 @@ class EmojiArtDocument: ReferenceFileDocument
         }
     }
     
-    func scaleEmoji(_ emoji: EmojiArtModel.Emoji, by scale: CGFloat, undoManager: UndoManager? ) {
+    func scaleEmoji(_ emoji: EmojiArtModel.Emoji, by scale: CGFloat, undoManager: UndoManager?) {
         if let index = emojiArt.emojis.index(matching: emoji) {
             undoablyPerform(operation: "Scale", with: undoManager) {
-                emojiArt.emojis[index].size = Int(CGFloat(emojiArt.emojis[index].size) * scale.rounded(.toNearestOrAwayFromZero))
+                emojiArt.emojis[index].size = Int((CGFloat(emojiArt.emojis[index].size) * scale).rounded(.toNearestOrAwayFromZero))
             }
         }
     }
     
-    // MARK: -Undo
+    // MARK: - Undo
     
-    private func undoablyPerform(operation: String,  with undoManager: UndoManager? = nil, doit:() -> Void) {
+    private func undoablyPerform(operation: String, with undoManager: UndoManager? = nil, doit: () -> Void) {
         let oldEmojiArt = emojiArt
         doit()
-        undoManager?.registerUndo(withTarget: self) { myself in // As Undo
-            myself.undoablyPerform(operation: operation, with: undoManager) {   // As Redo
+        undoManager?.registerUndo(withTarget: self) { myself in
+            myself.undoablyPerform(operation: operation, with: undoManager) {
                 myself.emojiArt = oldEmojiArt
             }
         }
         undoManager?.setActionName(operation)
     }
 }
+
 
 

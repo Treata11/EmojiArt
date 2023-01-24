@@ -247,3 +247,33 @@ extension Array where Element == NSItemProvider {
         loadObjects(ofType: theType, firstOnly: true, using: load)
     }
 }
+
+// According to Assignment_5:
+// adding a toggleMatching function via extension
+//(that adds/removes an element to/from the Set based on whether it’s already there based on Identifiable)
+// might be nice.
+// It would be nice; if the Developer choose to use the same gesture (i.e. tap gesture)
+// to select and deselect an emoji from the screen. That is not what I intent to do
+
+extension Set where Element: Identifiable {
+    mutating func toggleMatching(_ element: Element) -> Void {
+        if let index = index(matching: element) {
+            self.remove(at: index)
+        } else {
+            self.insert(element)
+        }
+    }
+}
+
+// Same func for the case that the elements of the Set are Integers
+
+extension Set where Element == Int {
+    mutating func toggleMatching(_ element: Element) -> Void {
+        if self.contains(element) {
+            remove(element)
+        } else {
+            insert(element)
+        }
+    }
+}
+    

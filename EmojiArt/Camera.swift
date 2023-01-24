@@ -7,14 +7,16 @@
 
 import SwiftUI
 
+// L15 UIKit's UIImagePickerController adapted to SwiftUI
+// L16 Moved to iOS-only on multiplatform version
+
 struct Camera: UIViewControllerRepresentable {
     var handlePickedImage: (UIImage?) -> Void
     
-    static var isAvailable: Bool  {
+    static var isAvailable: Bool {
         UIImagePickerController.isSourceTypeAvailable(.camera)
-        // MVC's Controller
     }
-    
+
     func makeCoordinator() -> Coordinator {
         Coordinator(handlePickedImage: handlePickedImage)
     }
@@ -28,26 +30,23 @@ struct Camera: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
-        // nothing to do here!
-        // The View doesn't need to get updates from the
-        // UIImage, it's only a picture that is taken once
-        // and there's no invalidation and rebuiling of views
+        // nothing to do
     }
     
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         var handlePickedImage: (UIImage?) -> Void
-        
+
         init(handlePickedImage: @escaping (UIImage?) -> Void) {
             self.handlePickedImage = handlePickedImage
         }
-         
+        
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             handlePickedImage(nil)
         }
-        
+
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            // InfoKey is either "originalImage" or "editedImage"
-            handlePickedImage((info[.originalImage] ?? info[.editedImage]) as? UIImage)
+            handlePickedImage((info[.editedImage] ?? info[.originalImage]) as? UIImage)
         }
     }
 }
+

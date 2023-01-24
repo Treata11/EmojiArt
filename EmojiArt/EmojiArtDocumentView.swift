@@ -27,7 +27,7 @@ struct EmojiArtDocumentView: View {
                 Color.gray.brightness(0.39).cornerRadius(20)
                     OptionalImage(uiImage: document.backgroundImage)
                         .scaleEffect(zoomScale)
-                        .position(converFromEmojiCoordinates((0,0), in: geometry))
+                        .position(convertFromEmojiCoordinates((0,0), in: geometry))
                         .gesture(doubleTapToZoom(in: geometry.size)) 
                 if document.backgroundImageFetchStatus == .fetching {
                     ProgressView().scaleEffect(3)   // ProgressView() built in swiftUI, "the world famous loading circle"
@@ -182,7 +182,7 @@ struct EmojiArtDocumentView: View {
         )
         return (Int(location.x), Int(location.y))
     }
-    private func converFromEmojiCoordinates(_ location: (x: Int, y: Int), in geometry: GeometryProxy) -> CGPoint {
+    private func convertFromEmojiCoordinates(_ location: (x: Int, y: Int), in geometry: GeometryProxy) -> CGPoint {
         let center: CGPoint = geometry.frame(in: .local).center
         
         return CGPoint(
@@ -192,7 +192,7 @@ struct EmojiArtDocumentView: View {
     }
     
     private func position(for emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
-        converFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
+        convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
     }
     
     @SceneStorage("EmojiArtDocumentView.steadyStatePanOffset")
@@ -210,14 +210,48 @@ struct EmojiArtDocumentView: View {
             }
             .onEnded { finalDragGestureValue in
                 steadyStatePanOffset = steadyStatePanOffset + (finalDragGestureValue.translation / zoomScale)
-                
+            }
+    }
+    
+// MARK: - Select/Deselect/Unselect Emojis
+    
+    @State private var selectedEmojisID = Set<EmojiArtModel.Emoji.ID>()
+    
+    private var selectedEmojis: Set<EmojiArtModel.Emoji> {
+        var selectedEmojis = Set<EmojiArtModel.Emoji>()
+        for index in selectedEmojisID {
+            selectedEmojis.insert(document.emojis.first(where: { $0.id == index })!)
+        }
+        return selectedEmojis
+    }
+    
+    private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
+        LongPressGesture(minimumDuration: 0.5)
+            .onEnded { finished in
+                withAnimation {
+                    selectedEmojisID.toggleMatching(emoji.id)
+                }
+            }
+    }
+    
+    private func deselectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
+        return TapGesture(count: 1)
+            .onEnded {
+                selectedEmojisID.remove(emoji.id)
+            }
+    }
+    
+    private func unselectAllEmojisGesture() -> some Gesture {
+        return TapGesture(count: 1)
+            .onEnded {
+               selectedEmojisID = []
             }
     }
     
     // MARK: - Zooming
     @SceneStorage("EmojiArtDocumentView.steadyStateZoomState")
     private var steadyStateZoomScale: CGFloat = 1
-    @GestureState private var gestureZoomScale: CGFloat = 1 //  It's the scale between the fingers ONLY while the pinch is happening
+    @GestureState private var gestureZoomScale: CGFloat = 1 //  It's the scale between the fingers ONLY when the pinch is happening
     
     private var zoomScale: CGFloat {
         steadyStateZoomScale * gestureZoomScale
@@ -253,33 +287,11 @@ struct EmojiArtDocumentView: View {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// MARK: - Preview(s)
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         EmojiArtDocumentView(document: EmojiArtDocument())
-            .previewInterfaceOrientation(.portraitUpsideDown)
+            .previewInterfaceOrientation(.portrait)
     }
 }
