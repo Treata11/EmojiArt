@@ -4,6 +4,8 @@
 <dict>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.family-games</string>
+	<key>CFBundleDisplayName</key>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDocumentTypes</key>
@@ -85,5 +87,7 @@
 			</dict>
 		</dict>
 	</array>
+	<key>CFBundleGetInfoString</key>
+	<string>,,,</string>
 </dict>
 </plist>

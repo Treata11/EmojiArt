@@ -11,6 +11,7 @@ struct EmojiArtDocumentView: View {
     @ObservedObject var document: EmojiArtDocument
     
     @Environment(\.undoManager) var undoManager
+    @Environment(\.colorScheme) var colorScheme
     
     @ScaledMetric var defaultEmojiFontSize: CGFloat = 40
     
@@ -24,7 +25,7 @@ struct EmojiArtDocumentView: View {
     var documentBody: some View {
         GeometryReader { geometry in
             ZStack {
-                Color.white
+                Color.gray.brightness(0.39).cornerRadius(20)
                 // L15 don't need this as an .overlay anymore
                 // L15 we explicitly position it in the ZStack
                 OptionalImage(uiImage: document.backgroundImage)
@@ -195,6 +196,46 @@ struct EmojiArtDocumentView: View {
         return found
     }
     
+    // MARK: - Select/Deselect/Unselect Emojis
+        // A5 a set for a selection of emojis
+        @State private var selectedEmojisID = Set<EmojiArtModel.Emoji.ID>()
+        
+        private var selectedEmojis: Set<EmojiArtModel.Emoji> {
+            var selectedEmojis = Set<EmojiArtModel.Emoji>()
+            for index in selectedEmojisID {
+                selectedEmojis.insert(document.emojis.first(where: { $0.id == index })!)
+            }
+            return selectedEmojis
+        }
+        
+//        private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
+//            LongPressGesture(minimumDuration: 0.5)
+//                .onEnded { finished in
+//                    withAnimation {
+//                        selectedEmojisID.toggleMatching(emoji.id)
+//                        print("\(emoji.id) was added to \(selectedEmojisID)")
+//                    }
+//                }
+//        }
+        
+        private func deselectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
+            return TapGesture(count: 1)
+                .onEnded {
+                    withAnimation {
+                        selectedEmojisID.toggleMatching(emoji.id)
+                        print("\(emoji.id) was removed from \(selectedEmojisID)")
+                    }
+                }
+        }
+        
+        private func unselectAllEmojisGesture() -> some Gesture {
+            return TapGesture(count: 1)
+                .onEnded {
+                   selectedEmojisID = []
+                }
+        }
+
+    
     // MARK: - Positioning/Sizing Emoji
     
     private func position(for emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
@@ -305,5 +346,7 @@ struct EmojiArtDocumentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         EmojiArtDocumentView(document: EmojiArtDocument())
+            .preferredColorScheme(.light)
+            .previewDevice("iphone 14 Pro Max")
     }
 }
