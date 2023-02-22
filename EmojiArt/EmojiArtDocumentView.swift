@@ -139,6 +139,45 @@ struct EmojiArtDocumentView: View {
         }
     }
     
+    // MARK: - Select/Deselect/Unselect Emojis
+        // A5 a set for a selection of emojis
+        @State private var selectedEmojisID = Set<EmojiArtModel.Emoji.ID>()
+        
+        private var selectedEmojis: Set<EmojiArtModel.Emoji> {
+            var selectedEmojis = Set<EmojiArtModel.Emoji>()
+            for index in selectedEmojisID {
+                selectedEmojis.insert(document.emojis.first(where: { $0.id == index })!)
+            }
+            return selectedEmojis
+        }
+        
+//        private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
+//            LongPressGesture(minimumDuration: 0.5)
+//                .onEnded { finished in
+//                    withAnimation {
+//                        selectedEmojisID.toggleMatching(emoji.id)
+//                        print("\(emoji.id) was added to \(selectedEmojisID)")
+//                    }
+//                }
+//        }
+        
+        private func deselectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
+            return TapGesture(count: 1)
+                .onEnded {
+                    withAnimation {
+                        selectedEmojisID.toggleMatching(emoji.id)
+                        print("\(emoji.id) was removed from \(selectedEmojisID)")
+                    }
+                }
+        }
+        
+        private func unselectAllEmojisGesture() -> some Gesture {
+            return TapGesture(count: 1)
+                .onEnded {
+                   selectedEmojisID = []
+                }
+        }
+    
     // MARK: - Panning
     
     @State private var steadyStatePanOffset: CGSize = CGSize.zero
