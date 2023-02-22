@@ -3,9 +3,11 @@
 //  EmojiArt
 //
 //  Created by Treata Norouzi on 11/30/22.
-//
+// 
 
 import SwiftUI
+
+// L16 Moved to iOS-only on multiplatform version
 
 struct PaletteManager: View {
     @EnvironmentObject var store: PaletteStore
@@ -50,7 +52,7 @@ struct PaletteManager: View {
 struct PaletteManager_Previews: PreviewProvider {
     static var previews: some View {
         PaletteManager()
-            .previewDevice("iPhone 14 Pro Max")
+            .previewDevice("iPhone 8")
             .environmentObject(PaletteStore(named: "Preview"))
             .preferredColorScheme(.light)
     }

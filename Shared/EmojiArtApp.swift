@@ -18,7 +18,3 @@ struct EmojiArtApp: App {
         }
     }
 }
-
-
-
-

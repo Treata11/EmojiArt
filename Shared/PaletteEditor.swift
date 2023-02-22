@@ -14,16 +14,15 @@ struct PaletteEditor: View {
         Form {
             nameSection
             addEmojisSection
-            removeEmojisSection
+            removeEmojiSection
         }
         .navigationTitle("Edit \(palette.name)")
-        .frame(minWidth: 333, minHeight: 539)
+        .frame(minWidth: 300, minHeight: 350)
     }
     
     var nameSection: some View {
         Section(header: Text("Name")) {
             TextField("Name", text: $palette.name)
-                .disableAutocorrection(true)
         }
     }
     
@@ -46,8 +45,8 @@ struct PaletteEditor: View {
         }
     }
     
-    var removeEmojisSection: some View {
-        Section(header: Text("Remove Emojis")) {
+    var removeEmojiSection: some View {
+        Section(header: Text("Remove Emoji")) {
             let emojis = palette.emojis.removingDuplicateCharacters.map { String($0) }
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 40))]) {
                 ForEach(emojis, id: \.self) { emoji in
@@ -62,11 +61,13 @@ struct PaletteEditor: View {
             .font(.system(size: 40))
         }
     }
- }
+}
 
 struct PaletteEditor_Previews: PreviewProvider {
     static var previews: some View {
         PaletteEditor(palette: .constant(PaletteStore(named: "Preview").palette(at: 4)))
-            .previewLayout(.fixed(width: 300, height: 400))
+            .previewLayout(.fixed(width: 300, height: 350))
+        PaletteEditor(palette: .constant(PaletteStore(named: "Preview").palette(at: 2)))
+            .previewLayout(.fixed(width: 300, height: 600))
     }
 }
