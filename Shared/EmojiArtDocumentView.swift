@@ -25,7 +25,10 @@ struct EmojiArtDocumentView: View {
     var documentBody: some View {
         GeometryReader { geometry in
             ZStack {
-                Color.gray.brightness(0.39).cornerRadius(20)
+                Color(colorScheme == .light ? .gray : .black)
+                    .brightness(colorScheme == .light ? 0.47 : 0.07)
+                    .cornerRadius(20)
+                
                 // L15 don't need this as an .overlay anymore
                 // L15 we explicitly position it in the ZStack
                 OptionalImage(uiImage: document.backgroundImage)
