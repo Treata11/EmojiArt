@@ -2,6 +2,9 @@
 //  UtilityExtensions.swift
 //  EmojiArt
 //
+//  Created by CS193p Instructor on 4/26/21.
+//  Copyright © 2021 Stanford University. All rights reserved.
+//
 
 import SwiftUI
 
@@ -248,8 +251,7 @@ extension Array where Element == NSItemProvider {
     }
 }
 
-// According to Assignment_5:
-// adding a toggleMatching function via extension
+// A5 adding a toggleMatching function via extension
 //(that adds/removes an element to/from the Set based on whether it’s already there based on Identifiable)
 // might be nice.
 // It would be nice; if the Developer choose to use the same gesture (i.e. tap gesture)
@@ -266,7 +268,6 @@ extension Set where Element: Identifiable {
 }
 
 // Same func for the case that the elements of the Set are Integers
-
 extension Set where Element == Int {
     mutating func toggleMatching(_ element: Element) -> Void {
         if self.contains(element) {
@@ -276,4 +277,4 @@ extension Set where Element == Int {
         }
     }
 }
-    
+

@@ -10,7 +10,7 @@ import Combine
 import UniformTypeIdentifiers
 
 extension UTType {
-    static let emojiart = UTType(exportedAs: "stanford.cs193p.emojiart")
+    static let emojiart = UTType(exportedAs: "edu.stanford.cs193p.emojiart")
 }
 
 class EmojiArtDocument: ReferenceFileDocument
@@ -131,6 +131,3 @@ class EmojiArtDocument: ReferenceFileDocument
         undoManager?.setActionName(operation)
     }
 }
-
-
-
