@@ -11,6 +11,8 @@ import SwiftUI
 struct EmojiArtDocumentView: View {
     @ObservedObject var document: EmojiArtDocument
     
+    @Environment(\.editMode) private var editMode
+    
     let defaultEmojiFontSize: CGFloat = 40
     
     var body: some View {
@@ -150,6 +152,20 @@ struct EmojiArtDocumentView: View {
             }
             return selectedEmojis
         }
+    
+    func selection(of emoji: EmojiArtModel.Emoji) -> some View {
+//        for index in selectedEmojis {
+//
+//        }
+        ForEach(selectedEmojis) { selectedEmojis in
+            if ((editMode?.wrappedValue.isEditing) != nil) {
+                Text(selectedEmojis.text)
+                    .rotationEffect(.degrees(10))
+                    .animation(Animation.linear(duration: 1/4).repeatForever(autoreverses: true),
+                               value: editMode?.wrappedValue)
+            }
+        }
+    }
         
 //        private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
 //            LongPressGesture(minimumDuration: 0.5)
