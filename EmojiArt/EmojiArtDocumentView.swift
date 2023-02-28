@@ -35,10 +35,19 @@ struct EmojiArtDocumentView: View {
                     ProgressView().scaleEffect(2)
                 } else {
                     ForEach(document.emojis) { emoji in
-                        Text(emoji.text)
-                            .font(.system(size: fontSize(for: emoji)))
-                            .scaleEffect(zoomScale)
-                            .position(position(for: emoji, in: geometry))
+                        if selectedEmojis.contains(emoji) {
+                            Text(emoji.text)
+                                .rotationEffect(.degrees(10))
+                                .animation(
+                                    Animation.linear(duration: 1/4).repeatForever(autoreverses: true),
+                                    value: editMode?.wrappedValue.isEditing
+                                )
+                        } else {
+                            Text(emoji.text)
+                                .font(.system(size: fontSize(for: emoji)))
+                                .scaleEffect(zoomScale)
+                                .position(position(for: emoji, in: geometry))
+                        }
                     }
                 }
             }
@@ -156,13 +165,15 @@ struct EmojiArtDocumentView: View {
     
     private func selection(of emoji: EmojiArtModel.Emoji) -> Void {
         document.emojis.forEach { emoji in
-            AnimatableText(text: emoji.text, angle: rotationAngle)
-                .onLongPressGesture(minimumDuration: 0.3) {
-                    withAnimation(.linear(duration: 1/4).repeatForever(autoreverses: true)) {
-                        selectedEmojisID.insert(emoji.id)
-                        rotationAngle += .degrees(-10)
+            if ((editMode?.wrappedValue.isEditing) != nil) {
+                AnimatableText(text: emoji.text, angle: rotationAngle)
+                    .onLongPressGesture(minimumDuration: 0.3) {
+                        withAnimation(.linear(duration: 1/4).repeatForever(autoreverses: true)) {
+                            selectedEmojisID.insert(emoji.id)
+                            rotationAngle += .degrees(-10)
+                        }
                     }
-                }
+            }
         }
     }
     
@@ -186,30 +197,32 @@ struct EmojiArtDocumentView: View {
 ///        }
 ///    }
         
-//        private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
-//            LongPressGesture(minimumDuration: 0.5)
-//                .onEnded { finished in
-//                    withAnimation {
-//                        selectedEmojisID.toggleMatching(emoji.id)
-//                        print("\(emoji.id) was added to \(selectedEmojisID)")
-//                    }
-//                }
-//        }
-        
-        private func deselectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
-            return TapGesture(count: 1)
-                .onEnded {
+        private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
+            LongPressGesture(minimumDuration: 0.2)
+                .onEnded { _ in 
+                    editMode?.wrappedValue = .active
                     withAnimation {
                         selectedEmojisID.toggleMatching(emoji.id)
-                        print("\(emoji.id) was removed from \(selectedEmojisID)")
+                        print("\(emoji.id) was added to \(selectedEmojisID)")
                     }
                 }
         }
         
+//        private func deselectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
+//            return TapGesture(count: 1)
+//                .onEnded {
+//                    withAnimation {
+//                        selectedEmojisID.toggleMatching(emoji.id)
+//                        print("\(emoji.id) was removed from \(selectedEmojisID)")
+//                    }
+//                }
+//        }
+        
         private func unselectAllEmojisGesture() -> some Gesture {
             TapGesture(count: 2)
                 .onEnded {
-                   selectedEmojisID = []
+                    editMode?.wrappedValue = .inactive
+                    selectedEmojisID = []
                 }
         }
     
