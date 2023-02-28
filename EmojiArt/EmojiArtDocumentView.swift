@@ -143,7 +143,8 @@ struct EmojiArtDocumentView: View {
     
     // MARK: - Select/Deselect/Unselect Emojis
         // A5 a set for a selection of emojis
-        @State private var selectedEmojisID = Set<EmojiArtModel.Emoji.ID>()
+    @State private var selectedEmojisID = Set<EmojiArtModel.Emoji.ID>()
+    @State private var rotationAngle: Angle = .degrees(10)
         
         private var selectedEmojis: Set<EmojiArtModel.Emoji> {
             var selectedEmojis = Set<EmojiArtModel.Emoji>()
@@ -153,21 +154,20 @@ struct EmojiArtDocumentView: View {
             return selectedEmojis
         }
     
-//        AnimatableText(
-//            text: ,
-//            angle:
-//        )
-//        .onDisappear() {
-//            if card.isMatched && card.isFaceUp {
-//                withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
-//                    rotationAngle += .degrees(360)
-//                }
-//            }
-//        }
-    
     func selection(of emoji: EmojiArtModel.Emoji) -> Void {
         selectedEmojis.forEach { emoji in
             if ((editMode?.wrappedValue.isEditing) != nil) {
+                AnimatableText(
+                    text: emoji.text,
+                    angle: rotationAngle
+                )
+                .onTapGesture() {
+                    withAnimation(.linear(duration: 1/4).repeatForever(autoreverses: true)) {
+                        rotationAngle += .degrees(-10)
+        
+                    }
+                }
+                
                 Text(emoji.text)
                     .rotationEffect(.degrees(10))
                     .animation(Animation.linear(duration: 1/4).repeatForever(autoreverses: true),
@@ -206,7 +206,7 @@ struct EmojiArtDocumentView: View {
         }
         
         private func unselectAllEmojisGesture() -> some Gesture {
-            TapGesture(count: 1)
+            TapGesture(count: 2)
                 .onEnded {
                    selectedEmojisID = []
                 }
