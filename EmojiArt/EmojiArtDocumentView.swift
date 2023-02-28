@@ -43,8 +43,6 @@ struct EmojiArtDocumentView: View {
                                             rotationAngle -= .degrees(5)
                                         }
                                     }
-//                                    .rotationEffect(.degrees(-10))
-//                                    .animation(.linear(duration: 0.25).repeatForever(autoreverses: true))
                             } else {
                                 Text(emoji.text)
                             }
@@ -159,7 +157,6 @@ struct EmojiArtDocumentView: View {
         // A5 a set for a selection of emojis
     @State private var selectedEmojisID = Set<EmojiArtModel.Emoji.ID>()
     @State private var rotationAngle: Angle = .degrees(0)
-    @GestureState private var rotationEffect: Angle = .degrees(-10)
         
         private var selectedEmojis: Set<EmojiArtModel.Emoji> {
             var selectedEmojis = Set<EmojiArtModel.Emoji>()
@@ -168,54 +165,16 @@ struct EmojiArtDocumentView: View {
             }
             return selectedEmojis
         }
-    
-//    private func selection(of emoji: EmojiArtModel.Emoji) -> Void {
-//        document.emojis.forEach { emoji in
-//            if ((editMode?.wrappedValue.isEditing) != nil) {
-//                AnimatableText(text: emoji.text, angle: rotationAngle)
-//                    .onLongPressGesture(minimumDuration: 0.3) {
-//                        withAnimation(.linear(duration: 1/4).repeatForever(autoreverses: true)) {
-//                            selectedEmojisID.insert(emoji.id)
-//                            rotationAngle += .degrees(-10)
-//                        }
-//                    }
-//            }
-//        }
-//    }
-    
-///    private func selection(of emoji: EmojiArtModel.Emoji) -> Void {
-///        selectedEmojis.forEach { emoji in
-///            if ((editMode?.wrappedValue.isEditing) != nil) {
-///                Text(emoji.text)
-///                    .rotationEffect(.degrees(10))
-///                    .animation(Animation.linear(duration: 1/4).repeatForever(autoreverses: true),
-///                               value: editMode?.wrappedValue)
-///            }
-///        }
-        
-///        ForEach(selectedEmojis) { selectedEmojis in
-///            if ((editMode?.wrappedValue.isEditing) != nil) {
-///                Text(selectedEmojis.text)
-///                    .rotationEffect(.degrees(10))
-///                    .animation(Animation.linear(duration: 1/4).repeatForever(autoreverses: true),
-///                               value: editMode?.wrappedValue)
-///            }
-///        }
-///    }
         
         private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
             LongPressGesture(minimumDuration: 0.3)
-//                .updating($rotationEffect) { Anglex, rotationEffect, _ in
-//                    rotationAngle += rotationEffect
-//                }
                 .onEnded { _ in
                     editMode?.wrappedValue = .active
                     print("\(emoji.id) was added to \(selectedEmojisID)")
-                    selectedEmojisID.insert(emoji.id)
-                    rotationAngle = .degrees(5)
-//                    withAnimation {
-//                        selectedEmojisID.toggleMatching(emoji.id)
-//                    }
+                    withAnimation() {
+                        selectedEmojisID.insert(emoji.id)
+                        rotationAngle = .degrees(5)
+                    }
                 }
         }
         
