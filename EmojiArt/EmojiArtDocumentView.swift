@@ -37,10 +37,13 @@ struct EmojiArtDocumentView: View {
                     ForEach(document.emojis) { emoji in
                         Group {
                             if selectedEmojis.contains(emoji) {
-                                Text(emoji.text)
-                                    .rotationEffect(.degrees(10))
+                                AnimatableText(text: emoji.text, angle: rotationAngle)
+//                                withAnimation(.linear(duration: 0.25).repeatForever(autoreverses: true)) {
+//                                    rotationAngle -= .degrees(10)
+//                                }
+                                    .rotationEffect(.degrees(-10))
                                     .animation(
-                                        Animation.linear(duration: 1/4).repeatForever(autoreverses: true))
+                                        Animation.linear(duration: 0.25).repeatForever(autoreverses: true))
                             } else {
                                 Text(emoji.text)
                             }
