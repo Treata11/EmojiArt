@@ -172,7 +172,7 @@ struct EmojiArtDocumentView: View {
         }
         
         private func unselectAllEmojisGesture() -> some Gesture {
-            return TapGesture(count: 1)
+            TapGesture(count: 1)
                 .onEnded {
                    selectedEmojisID = []
                 }
