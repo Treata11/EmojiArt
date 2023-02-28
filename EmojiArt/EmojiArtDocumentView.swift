@@ -154,26 +154,27 @@ struct EmojiArtDocumentView: View {
             return selectedEmojis
         }
     
-    func selection(of emoji: EmojiArtModel.Emoji) -> Void {
-        selectedEmojis.forEach { emoji in
-            if ((editMode?.wrappedValue.isEditing) != nil) {
-                AnimatableText(
-                    text: emoji.text,
-                    angle: rotationAngle
-                )
-                .onTapGesture() {
+    private func selection(of emoji: EmojiArtModel.Emoji) -> Void {
+        document.emojis.forEach { emoji in
+            AnimatableText(text: emoji.text, angle: rotationAngle)
+                .onLongPressGesture(minimumDuration: 0.3) {
                     withAnimation(.linear(duration: 1/4).repeatForever(autoreverses: true)) {
+                        selectedEmojisID.insert(emoji.id)
                         rotationAngle += .degrees(-10)
-        
                     }
                 }
-                
-                Text(emoji.text)
-                    .rotationEffect(.degrees(10))
-                    .animation(Animation.linear(duration: 1/4).repeatForever(autoreverses: true),
-                               value: editMode?.wrappedValue)
-            }
         }
+    }
+    
+///    private func selection(of emoji: EmojiArtModel.Emoji) -> Void {
+///        selectedEmojis.forEach { emoji in
+///            if ((editMode?.wrappedValue.isEditing) != nil) {
+///                Text(emoji.text)
+///                    .rotationEffect(.degrees(10))
+///                    .animation(Animation.linear(duration: 1/4).repeatForever(autoreverses: true),
+///                               value: editMode?.wrappedValue)
+///            }
+///        }
         
 ///        ForEach(selectedEmojis) { selectedEmojis in
 ///            if ((editMode?.wrappedValue.isEditing) != nil) {
@@ -183,7 +184,7 @@ struct EmojiArtDocumentView: View {
 ///                               value: editMode?.wrappedValue)
 ///            }
 ///        }
-    }
+///    }
         
 //        private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
 //            LongPressGesture(minimumDuration: 0.5)
