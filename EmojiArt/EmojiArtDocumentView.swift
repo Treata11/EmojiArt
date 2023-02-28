@@ -40,14 +40,12 @@ struct EmojiArtDocumentView: View {
                                 Text(emoji.text)
                                     .rotationEffect(.degrees(10))
                                     .animation(
-                                        Animation.linear(duration: 1/4).repeatForever(autoreverses: true),
-                                        value: editMode?.wrappedValue.isEditing
-                                    )
+                                        Animation.linear(duration: 1/4).repeatForever(autoreverses: true))
                             } else {
                                 Text(emoji.text)
                             }
                         }
-                        .gesture(selectEmojiGesture(for: emoji))
+                        .gesture(selectEmojiGesture(for: emoji).simultaneously(with: unselectAllEmojisGesture()))
                         .font(.system(size: fontSize(for: emoji)))
                         .scaleEffect(zoomScale)
                         .position(position(for: emoji, in: geometry))
