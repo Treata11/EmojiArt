@@ -38,12 +38,13 @@ struct EmojiArtDocumentView: View {
                         Group {
                             if selectedEmojis.contains(emoji) {
                                 AnimatableText(text: emoji.text, angle: rotationAngle)
-//                                withAnimation(.linear(duration: 0.25).repeatForever(autoreverses: true)) {
-//                                    rotationAngle -= .degrees(10)
-//                                }
-                                    .rotationEffect(.degrees(-10))
-                                    .animation(
-                                        Animation.linear(duration: 0.25).repeatForever(autoreverses: true))
+                                    .onAppear() {
+                                        withAnimation(.linear(duration: 0.25).repeatForever(autoreverses: true)) {
+                                            rotationAngle -= .degrees(5)
+                                        }
+                                    }
+//                                    .rotationEffect(.degrees(-10))
+//                                    .animation(.linear(duration: 0.25).repeatForever(autoreverses: true))
                             } else {
                                 Text(emoji.text)
                             }
@@ -157,7 +158,8 @@ struct EmojiArtDocumentView: View {
     // MARK: - Select/Deselect/Unselect Emojis
         // A5 a set for a selection of emojis
     @State private var selectedEmojisID = Set<EmojiArtModel.Emoji.ID>()
-    @State private var rotationAngle: Angle = .degrees(10)
+    @State private var rotationAngle: Angle = .degrees(0)
+    @GestureState private var rotationEffect: Angle = .degrees(-10)
         
         private var selectedEmojis: Set<EmojiArtModel.Emoji> {
             var selectedEmojis = Set<EmojiArtModel.Emoji>()
@@ -202,13 +204,18 @@ struct EmojiArtDocumentView: View {
 ///    }
         
         private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
-            LongPressGesture(minimumDuration: 0.2)
+            LongPressGesture(minimumDuration: 0.3)
+//                .updating($rotationEffect) { Anglex, rotationEffect, _ in
+//                    rotationAngle += rotationEffect
+//                }
                 .onEnded { _ in
                     editMode?.wrappedValue = .active
-                    withAnimation {
-                        selectedEmojisID.toggleMatching(emoji.id)
-                        print("\(emoji.id) was added to \(selectedEmojisID)")
-                    }
+                    print("\(emoji.id) was added to \(selectedEmojisID)")
+                    selectedEmojisID.insert(emoji.id)
+                    rotationAngle = .degrees(5)
+//                    withAnimation {
+//                        selectedEmojisID.toggleMatching(emoji.id)
+//                    }
                 }
         }
         
