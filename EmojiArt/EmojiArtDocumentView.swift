@@ -153,18 +153,36 @@ struct EmojiArtDocumentView: View {
             return selectedEmojis
         }
     
-    func selection(of emoji: EmojiArtModel.Emoji) -> some View {
-//        for index in selectedEmojis {
-//
+//        AnimatableText(
+//            text: ,
+//            angle:
+//        )
+//        .onDisappear() {
+//            if card.isMatched && card.isFaceUp {
+//                withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
+//                    rotationAngle += .degrees(360)
+//                }
+//            }
 //        }
-        ForEach(selectedEmojis) { selectedEmojis in
+    
+    func selection(of emoji: EmojiArtModel.Emoji) -> Void {
+        selectedEmojis.forEach { emoji in
             if ((editMode?.wrappedValue.isEditing) != nil) {
-                Text(selectedEmojis.text)
+                Text(emoji.text)
                     .rotationEffect(.degrees(10))
                     .animation(Animation.linear(duration: 1/4).repeatForever(autoreverses: true),
                                value: editMode?.wrappedValue)
             }
         }
+        
+///        ForEach(selectedEmojis) { selectedEmojis in
+///            if ((editMode?.wrappedValue.isEditing) != nil) {
+///                Text(selectedEmojis.text)
+///                    .rotationEffect(.degrees(10))
+///                    .animation(Animation.linear(duration: 1/4).repeatForever(autoreverses: true),
+///                               value: editMode?.wrappedValue)
+///            }
+///        }
     }
         
 //        private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {

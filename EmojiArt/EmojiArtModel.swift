@@ -12,7 +12,7 @@ struct EmojiArtModel {
     var background = Background.blank
     var emojis = [Emoji]()
     
-    struct Emoji: Identifiable, Hashable {
+    struct Emoji: Identifiable, Hashable {  // conformance to RandomAccessCollection?
         let text: String
         var x: Int // offset from the center
         var y: Int // offset from the center
