@@ -76,3 +76,24 @@ struct RotationallyAnimatedText: View {
             .rotationEffect(angle, anchor: .center)
     }
 }
+
+// as in A5 Extra Credit:
+// .font modifier is not animatable. See if you can figure out
+// how to make an AnimatableSystemFontModifier that will animate
+// the size of a system font and use that instead of the combination
+// of .font and .scaleEffect we are using now. This ViewModifier can be
+// written in 6 lines of code (not saying you have to do it that efficiently,
+// but just so you know what’s possible).
+
+struct ScaledAnimatedText: View {
+    let name: String
+    let text: String
+    let fontScale: CGFloat
+    
+    var body: some View {
+        var myFont = Font.custom(name, size: fontScale, relativeTo: Font.TextStyle.body)
+        Text(text)
+            .font(myFont)
+    }
+}
+
