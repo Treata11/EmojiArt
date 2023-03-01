@@ -41,8 +41,11 @@ struct EmojiArtDocumentView: View {
                                     RotationallyAnimatedText(text: emoji.text, angle: rotationAngle)
                                         .overlay() {
                                             AnimatedActionButton(title: "Delete", systemImage: "minus.circle.fill") {
-                                                
-                                                // delete emoji everywhere
+                                                withAnimation { // must be a transition
+                                                    selectedEmojisID.remove(emoji.id)
+                                                    document.removeEmoji(emoji.text, size: CGFloat(emoji.size))
+                                                    // delete emoji everywhere
+                                                }
                                             }
                                             .offset(x: -geometry.size.width / 10, y: -geometry.size.height / 12)
                                             .scaleEffect(0.5)
