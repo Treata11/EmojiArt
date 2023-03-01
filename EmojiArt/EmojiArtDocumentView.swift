@@ -43,7 +43,7 @@ struct EmojiArtDocumentView: View {
                                             AnimatedActionButton(title: "Delete", systemImage: "minus.circle.fill") {
                                                 withAnimation { // must be a transition
                                                     selectedEmojisID.remove(emoji.id)
-                                                    document.removeEmoji(emoji.text, size: CGFloat(emoji.size))
+                                                    document.removeEmoji(emoji.text, at: emoji.x, size: CGFloat(emoji.size))
                                                     // delete emoji everywhere
                                                 }
                                             }
