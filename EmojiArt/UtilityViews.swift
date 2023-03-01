@@ -67,7 +67,7 @@ struct IdentifiableAlert: Identifiable {
 // Used to make an explicite rotation animation for emojis
 // for a selection of emojis that are going to be edited
 
-struct AnimatableText: View {
+struct RotationallyAnimatedText: View {
     let text: String
     let angle: Angle
     

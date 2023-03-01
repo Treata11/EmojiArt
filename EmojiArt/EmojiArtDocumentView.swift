@@ -37,12 +37,26 @@ struct EmojiArtDocumentView: View {
                     ForEach(document.emojis) { emoji in
                         Group {
                             if selectedEmojis.contains(emoji) {
-                                AnimatableText(text: emoji.text, angle: rotationAngle)
-                                    .onAppear() {
-                                        withAnimation(.linear(duration: 0.25).repeatForever(autoreverses: true)) {
-                                            rotationAngle -= .degrees(5)
+                                if #available(iOS 15.0, *) {
+                                    RotationallyAnimatedText(text: emoji.text, angle: rotationAngle)
+                                        .overlay() {
+                                            AnimatedActionButton(title: "Delete", systemImage: "minus.circle.fill") {
+                                                // delete emoji everywhere
+                                            }
+//                                            .position(positioning(for: emoji, in: geometry))
+                                            .offset(x: -geometry.size.width / 10, y: -geometry.size.height / 12)
+                                            .scaleEffect(0.5)
+                                            .foregroundColor(.accentColor)
+                                            .opacity(0.7)
                                         }
-                                    }
+                                        .onAppear() {
+                                            withAnimation(.linear(duration: 0.25).repeatForever(autoreverses: true)) {
+                                                rotationAngle -= .degrees(5)
+                                            }
+                                        }
+                                } else {
+                                    // Fallback on earlier versions
+                                }
                             } else {
                                 Text(emoji.text)
                             }
@@ -93,6 +107,10 @@ struct EmojiArtDocumentView: View {
     
     private func position(for emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
         convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
+    }
+    
+    private func positioning(for button: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
+        convertFromEmojiCoordinates((button.x - (button.x / 40), button.y - (button.y / 40)), in: geometry)
     }
     
     private func fontSize(for emoji: EmojiArtModel.Emoji) -> CGFloat {
@@ -170,7 +188,7 @@ struct EmojiArtDocumentView: View {
             LongPressGesture(minimumDuration: 0.3)
                 .onEnded { _ in
                     editMode?.wrappedValue = .active
-                    print("\(emoji.id) was added to \(selectedEmojisID)")
+//                    print("\(emoji.id) was added to \(selectedEmojisID)")
                     withAnimation() {
                         selectedEmojisID.insert(emoji.id)
                         rotationAngle = .degrees(5)
