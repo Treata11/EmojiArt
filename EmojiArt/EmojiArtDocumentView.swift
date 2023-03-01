@@ -44,7 +44,6 @@ struct EmojiArtDocumentView: View {
                                                 withAnimation { // must be a transition
                                                     selectedEmojisID.remove(emoji.id)
                                                     document.removeEmoji(emoji.text, at: emoji.x, size: CGFloat(emoji.size))
-                                                    // delete emoji everywhere
                                                 }
                                             }
                                             .offset(x: -geometry.size.width / 10, y: -geometry.size.height / 12)
@@ -64,7 +63,8 @@ struct EmojiArtDocumentView: View {
                                 Text(emoji.text)
                             }
                         }
-                        .gesture(selectEmojiGesture(for: emoji))
+//                        .gesture(editMode?.wrappedValue == .active ? zoomGesture().simultaneously(with: panGesture()) : nil)
+                        .gesture(selectedEmojisID.contains(emoji.id) ? nil : selectEmojiGesture(for: emoji))
                         .font(.system(size: fontSize(for: emoji)))
                         .scaleEffect(zoomScale)
                         .position(position(for: emoji, in: geometry))
@@ -75,7 +75,15 @@ struct EmojiArtDocumentView: View {
             .onDrop(of: [.plainText,.url,.image], isTargeted: nil) { providers, location in
                 drop(providers: providers, at: location, in: geometry)
             }
-            .gesture(panGesture().simultaneously(with: zoomGesture()).simultaneously(with: unselectAllEmojisGesture()))
+            .gesture(selectedEmojisID.isEmpty ? panGesture().simultaneously(with: zoomGesture()) : nil)
+            .gesture(selectedEmojisID.isEmpty == false ? unselectAllEmojisGesture() : nil)
+            // to check wether if emojis are in editMode
+            // if not, user can pan and zoom the background
+//            if editMode?.wrappedValue == .inactive {
+//                self.gesture(panGesture().simultaneously(with: zoomGesture()))
+//            } else {
+//                self.gesture(unselectAllEmojisGesture())
+//            }
         }
     }
     
@@ -112,10 +120,6 @@ struct EmojiArtDocumentView: View {
         convertFromEmojiCoordinates((emoji.x, emoji.y), in: geometry)
     }
     
-    private func positioning(for button: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> CGPoint {
-        convertFromEmojiCoordinates((button.x - (button.x / 40), button.y - (button.y / 40)), in: geometry)
-    }
-    
     private func fontSize(for emoji: EmojiArtModel.Emoji) -> CGFloat {
         CGFloat(emoji.size)
     }
@@ -136,6 +140,10 @@ struct EmojiArtDocumentView: View {
             y: center.y + CGFloat(location.y) * zoomScale + panOffset.height
         )
     }
+    
+//    private func scale(_ emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> Void {
+//        emoji.text
+//    }
     
     // MARK: - Zooming
     
