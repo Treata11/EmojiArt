@@ -41,9 +41,9 @@ struct EmojiArtDocumentView: View {
                                     RotationallyAnimatedText(text: emoji.text, angle: rotationAngle)
                                         .overlay() {
                                             AnimatedActionButton(title: "Delete", systemImage: "minus.circle.fill") {
+                                                
                                                 // delete emoji everywhere
                                             }
-//                                            .position(positioning(for: emoji, in: geometry))
                                             .offset(x: -geometry.size.width / 10, y: -geometry.size.height / 12)
                                             .scaleEffect(0.5)
                                             .foregroundColor(.accentColor)
@@ -61,7 +61,7 @@ struct EmojiArtDocumentView: View {
                                 Text(emoji.text)
                             }
                         }
-                        .gesture(selectEmojiGesture(for: emoji).simultaneously(with: unselectAllEmojisGesture()))
+                        .gesture(selectEmojiGesture(for: emoji))
                         .font(.system(size: fontSize(for: emoji)))
                         .scaleEffect(zoomScale)
                         .position(position(for: emoji, in: geometry))
@@ -72,7 +72,7 @@ struct EmojiArtDocumentView: View {
             .onDrop(of: [.plainText,.url,.image], isTargeted: nil) { providers, location in
                 drop(providers: providers, at: location, in: geometry)
             }
-            .gesture(panGesture().simultaneously(with: zoomGesture()))
+            .gesture(panGesture().simultaneously(with: zoomGesture()).simultaneously(with: unselectAllEmojisGesture()))
         }
     }
     
