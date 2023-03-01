@@ -48,7 +48,7 @@ struct EmojiArtDocumentView: View {
                                                     }
                                                 }
                                                 .offset(x: -geometry.size.width / 10, y: -geometry.size.height / 12)
-                                                .scaleEffect(0.5)
+                                                .scaleEffect(zoomScale / 2.5)
                                                 .foregroundColor(.accentColor)
                                                 .opacity(0.7)
                                             }
