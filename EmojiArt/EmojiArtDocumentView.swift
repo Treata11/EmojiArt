@@ -38,22 +38,28 @@ struct EmojiArtDocumentView: View {
                         Group {
                             if selectedEmojis.contains(emoji) {
                                 if #available(iOS 15.0, *) {
-                                    RotationallyAnimatedText(text: emoji.text, angle: rotationAngle)
-                                        .overlay() {
-                                            AnimatedActionButton(title: "Delete", systemImage: "minus.circle.fill") {
-                                                withAnimation { // must be a transition
-                                                    selectedEmojisID.remove(emoji.id)
-                                                    document.removeEmoji(emoji.text, at: emoji.x, size: CGFloat(emoji.size))
+                                    Group {
+                                        RotationallyAnimatedText(text: emoji.text, angle: rotationAngle)
+                                            .overlay() {
+                                                AnimatedActionButton(title: "Delete", systemImage: "minus.circle.fill") {
+                                                    withAnimation { // must be a transition
+                                                        selectedEmojisID.remove(emoji.id)
+                                                        document.removeEmoji(emoji.text, at: emoji.x, size: CGFloat(emoji.size))
+                                                    }
                                                 }
+                                                .offset(x: -geometry.size.width / 10, y: -geometry.size.height / 12)
+                                                .scaleEffect(0.5)
+                                                .foregroundColor(.accentColor)
+                                                .opacity(0.7)
                                             }
-                                            .offset(x: -geometry.size.width / 10, y: -geometry.size.height / 12)
-                                            .scaleEffect(0.5)
-                                            .foregroundColor(.accentColor)
-                                            .opacity(0.7)
-                                        }
-                                        .onAppear() {
-                                            withAnimation(.linear(duration: 0.25).repeatForever(autoreverses: true)) {
-                                                rotationAngle -= .degrees(5)
+                                    }
+                                    .gesture(zoomGesture())
+//                                        .onDrag {
+//                                            // dragging the emoji around
+//                                        }
+                                    .onAppear() {
+                                        withAnimation(.linear(duration: 0.25).repeatForever(autoreverses: true)) {
+                                            rotationAngle -= .degrees(5)
                                             }
                                         }
                                 } else {
