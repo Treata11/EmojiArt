@@ -175,6 +175,7 @@ struct EmojiArtDocumentView: View {
         // A5 a set for a selection of emojis
     @State private var selectedEmojisID = Set<EmojiArtModel.Emoji.ID>()
     @State private var rotationAngle: Angle = .degrees(0)
+    @State private var isLongPressGestureActive: Bool = false
         
         private var selectedEmojis: Set<EmojiArtModel.Emoji> {
             var selectedEmojis = Set<EmojiArtModel.Emoji>()
@@ -185,10 +186,12 @@ struct EmojiArtDocumentView: View {
         }
         
         private func selectEmojiGesture(for emoji: EmojiArtModel.Emoji) -> some Gesture {
+            // bogus!
+            // use .updating to check wether isLongPressGestureActive or not
             LongPressGesture(minimumDuration: 0.3)
                 .onEnded { _ in
                     editMode?.wrappedValue = .active
-//                    print("\(emoji.id) was added to \(selectedEmojisID)")
+                    print("\(emoji.id) was added to \(selectedEmojisID)")
                     withAnimation() {
                         selectedEmojisID.insert(emoji.id)
                         rotationAngle = .degrees(5)
@@ -207,10 +210,14 @@ struct EmojiArtDocumentView: View {
 //        }
         
         private func unselectAllEmojisGesture() -> some Gesture {
-            TapGesture(count: 2)
+            TapGesture(count: 1)
                 .onEnded {
                     editMode?.wrappedValue = .inactive
-                    selectedEmojisID = []
+                    isLongPressGestureActive = false
+                    withAnimation {
+                        selectedEmojisID = []
+                        //                    selectedEmojis.removeAll()
+                    }
                 }
         }
     
