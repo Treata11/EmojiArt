@@ -281,3 +281,12 @@ extension Set where Element == Int {
         }
     }
 }
+
+// Created a very simple computed var to make the code a little cleaner
+// While checking if the Collection hasAnyValue or wether it isEmpy.
+
+extension Collection {
+    var hasAnyValue: Bool {
+        get { self.isEmpty ? false : true }
+    }
+}

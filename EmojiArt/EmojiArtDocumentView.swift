@@ -86,7 +86,7 @@ struct EmojiArtDocumentView: View {
                 drop(providers: providers, at: location, in: geometry)
             }
             .gesture(selectedEmojisID.isEmpty ? panGesture().simultaneously(with: zoomGesture()) : nil)
-            .gesture(!selectedEmojisID.isEmpty ? unselectAllEmojisGesture() : nil)
+            .gesture(selectedEmojisID.hasAnyValue ? unselectAllEmojisGesture() : nil)
             // to check wether if emojis are in editMode
             // if not, user can pan and zoom the background
 //            if editMode?.wrappedValue == .inactive {
