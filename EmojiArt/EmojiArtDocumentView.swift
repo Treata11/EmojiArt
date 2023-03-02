@@ -63,7 +63,11 @@ struct EmojiArtDocumentView: View {
                                             }
                                         }
                                 } else {
-                                    // Fallback on earlier versions
+                                    /// Fallback on earlier versions:
+                                    // If the device isn't updated with iOS15
+                                    // There will be a button provided to delete
+                                    // selected emojis, and would be the only
+                                    // way to actually delete them.
                                 }
                             } else {
                                 Text(emoji.text)
@@ -82,7 +86,7 @@ struct EmojiArtDocumentView: View {
                 drop(providers: providers, at: location, in: geometry)
             }
             .gesture(selectedEmojisID.isEmpty ? panGesture().simultaneously(with: zoomGesture()) : nil)
-            .gesture(selectedEmojisID.isEmpty == false ? unselectAllEmojisGesture() : nil)
+            .gesture(!selectedEmojisID.isEmpty ? unselectAllEmojisGesture() : nil)
             // to check wether if emojis are in editMode
             // if not, user can pan and zoom the background
 //            if editMode?.wrappedValue == .inactive {
