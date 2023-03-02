@@ -85,15 +85,28 @@ struct RotationallyAnimatedText: View {
 // written in 6 lines of code (not saying you have to do it that efficiently,
 // but just so you know what’s possible).
 
-struct ScaledAnimatedText: View {
+struct ScalarAnimatedText: View {
     let name: String
     let text: String
-    let fontScale: CGFloat
+    var fontScale: CGFloat
     
     var body: some View {
-        var myFont = Font.custom(name, size: fontScale, relativeTo: Font.TextStyle.body)
-        Text(text)
-            .font(myFont)
+        let myFont = Font.custom(name, size: fontScale, relativeTo: Font.TextStyle.body)
+        Text(text).font(myFont)
     }
 }
 
+// A combination of the 2 previous Views in a single struct
+
+struct AnimatableText: View {
+    let angle: Angle
+    let name: String
+    let text: String
+    var fontScale: CGFloat
+    
+    var body: some View {
+        let Font = Font.custom(name, size: fontScale)
+        Text(text).font(Font)
+            .rotationEffect(angle)
+    }
+}
