@@ -48,12 +48,13 @@ struct EmojiArtDocumentView: View {
                                                         document.removeEmoji(emoji)
                                                     }
                                                 }
-                                                .offset(x: -getZoomScaleForEmoji(emoji) * 50, y: -getZoomScaleForEmoji(emoji) * 50)
-                                                .scaleEffect(getZoomScaleForEmoji(emoji) / 2.5)
+                                                .offset(x: -emojiZoomScale(emoji) * 50, y: -emojiZoomScale(emoji) * 50)
+                                                .scaleEffect(emojiZoomScale(emoji) / 2.5)
                                                 .foregroundColor(.accentColor)
                                                 .opacity(0.7)
                                             }
                                     }
+                                    .padding()
                                     .onAppear() {
                                         withAnimation(.linear(duration: 0.25).repeatForever(autoreverses: true)) {
                                             rotationAngle -= .degrees(5)
@@ -73,7 +74,7 @@ struct EmojiArtDocumentView: View {
 //                        .gesture(editMode?.wrappedValue == .active ? zoomGesture : nil) // for selection
                         .gesture(selectedEmojisID.contains(emoji.id) ? nil : selectEmojiGesture(for: emoji))
                         .font(.system(size: fontSize(for: emoji)))
-                        .scaleEffect(getZoomScaleForEmoji(emoji))
+                        .scaleEffect(emojiZoomScale(emoji))
                         .position(position(for: emoji, in: geometry))
                     }
                 }
@@ -149,7 +150,7 @@ struct EmojiArtDocumentView: View {
         steadyStateZoomScale * gestureZoomScale
     }
     
-    private func getZoomScaleForEmoji(_ emoji: EmojiArtModel.Emoji) -> CGFloat {
+    private func emojiZoomScale(_ emoji: EmojiArtModel.Emoji) -> CGFloat {
         selectedEmojis.isEmpty ? zoomScale : selectedEmojis.contains(emoji) ? zoomScale : steadyStateZoomScale
     }
     
@@ -191,7 +192,6 @@ struct EmojiArtDocumentView: View {
         // A5 a set for a selection of emojis
     @State private var selectedEmojisID = Set<EmojiArtModel.Emoji.ID>()
     @State private var rotationAngle: Angle = .degrees(0)
-    @State private var isLongPressGestureActive: Bool = false
         
         private var selectedEmojis: Set<EmojiArtModel.Emoji> {
             var selectedEmojis = Set<EmojiArtModel.Emoji>()
@@ -229,7 +229,6 @@ struct EmojiArtDocumentView: View {
             TapGesture(count: 1)
                 .onEnded {
                     editMode?.wrappedValue = .inactive
-                    isLongPressGestureActive = false
                     withAnimation {
                         selectedEmojisID = []
                         //                    selectedEmojis.removeAll()
