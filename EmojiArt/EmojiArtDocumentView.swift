@@ -45,7 +45,7 @@ struct EmojiArtDocumentView: View {
                                                 AnimatedActionButton(title: nil, systemImage: "minus.circle.fill") {
                                                     withAnimation { // must be a transition
                                                         selectedEmojisID.remove(emoji.id)
-                                                        document.removeEmoji(emoji.text, at: emoji.x, size: CGFloat(emoji.size))
+                                                        document.removeEmoji(emoji)
                                                     }
                                                 }
                                                 .offset(x: -getZoomScaleForEmoji(emoji) * 50, y: -getZoomScaleForEmoji(emoji) * 50)
