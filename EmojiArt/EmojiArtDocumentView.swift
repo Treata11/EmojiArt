@@ -39,7 +39,9 @@ struct EmojiArtDocumentView: View {
                             if selectedEmojis.contains(emoji) {
                                 if #available(iOS 15.0, *) {
                                     Group {
-                                        RotationallyAnimatedText(text: emoji.text, angle: rotationAngle)
+//                                        RotationallyAnimatedText(text: emoji.text, angle: rotationAngle)
+                                        AnimatableText(angle: rotationAngle, name: "", text: emoji.text, fontScale: emojiFontSize)
+
                                             .overlay() {
                                                 AnimatedActionButton(title: "Delete", systemImage: "minus.circle.fill") {
                                                     withAnimation { // must be a transition
@@ -53,7 +55,6 @@ struct EmojiArtDocumentView: View {
                                                 .opacity(0.7)
                                             }
                                     }
-                                    .gesture(zoomGesture())
 //                                        .onDrag {
 //                                            // dragging the emoji around
 //                                        }
@@ -73,7 +74,8 @@ struct EmojiArtDocumentView: View {
                                 Text(emoji.text)
                             }
                         }
-//                        .gesture(editMode?.wrappedValue == .active ? zoomGesture().simultaneously(with: panGesture()) : nil)
+//                        .gesture(editMode?.wrappedValue == .active ? zoomGesture() : nil)
+                        .gesture(editMode?.wrappedValue == .active ? emojiMagnification(emoji) : nil) // for selection
                         .gesture(selectedEmojisID.contains(emoji.id) ? nil : selectEmojiGesture(for: emoji))
                         .font(.system(size: fontSize(for: emoji)))
                         .scaleEffect(zoomScale)
@@ -134,6 +136,11 @@ struct EmojiArtDocumentView: View {
         CGFloat(emoji.size)
     }
     
+    private func convertToEmojiSize(emoji: EmojiArtModel.Emoji, by size: CGFloat) -> () {
+        let size = emojiFontSize // should it be devided by zoomScale or not?
+        return document.scaleEmoji(emoji, by: size)
+    }
+    
     private func convertToEmojiCoordinates(_ location: CGPoint, in geometry: GeometryProxy) -> (x: Int, y: Int) {
         let center = geometry.frame(in: .local).center
         let location = CGPoint(
@@ -158,10 +165,16 @@ struct EmojiArtDocumentView: View {
     // MARK: - Zooming
     
     @State private var steadyStateZoomScale: CGFloat = 1
+    @State private var steadyStateFontSize: CGFloat = 1
+    @GestureState private var fontSize: CGFloat = 40
     @GestureState private var gestureZoomScale: CGFloat = 1
     
     private var zoomScale: CGFloat {
         steadyStateZoomScale * gestureZoomScale
+    }
+    
+    private var emojiFontSize: CGFloat {
+        steadyStateFontSize * fontSize
     }
     
     private func zoomGesture() -> some Gesture {
@@ -171,6 +184,17 @@ struct EmojiArtDocumentView: View {
             }
             .onEnded { gestureScaleAtEnd in
                 steadyStateZoomScale *= gestureScaleAtEnd
+            }
+    }
+    
+    private func emojiMagnification(_ emoji: EmojiArtModel.Emoji) -> some Gesture {
+        MagnificationGesture()
+            .updating($fontSize) { latestGestureScale, fontSize, _ in
+                fontSize = latestGestureScale
+            }
+            .onEnded { gestureScaleAtEnd in
+                steadyStateFontSize *= gestureScaleAtEnd
+                convertToEmojiSize(emoji: emoji, by: emojiFontSize)
             }
     }
     
