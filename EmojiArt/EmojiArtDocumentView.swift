@@ -54,9 +54,6 @@ struct EmojiArtDocumentView: View {
                                                 .opacity(0.7)
                                             }
                                     }
-//                                        .onDrag {
-//                                            // dragging the emoji around
-//                                        }
                                     .onAppear() {
                                         withAnimation(.linear(duration: 0.25).repeatForever(autoreverses: true)) {
                                             rotationAngle -= .degrees(5)
@@ -86,14 +83,6 @@ struct EmojiArtDocumentView: View {
                 drop(providers: providers, at: location, in: geometry)
             }
             .gesture(panGesture().simultaneously(with: zoomGesture()))
-//            .gesture(selectedEmojisID.isEmpty ? panGesture().simultaneously(with: zoomGesture()) : nil)
-            // to check wether if emojis are in editMode
-            // if not, user can pan and zoom the background
-//            if editMode?.wrappedValue == .inactive {
-//                self.gesture(panGesture().simultaneously(with: zoomGesture()))
-//            } else {
-//                self.gesture(unselectAllEmojisGesture())
-//            }
         }
     }
     
@@ -134,11 +123,6 @@ struct EmojiArtDocumentView: View {
         CGFloat(emoji.size)
     }
     
-//    private func convertToEmojiSize(emoji: EmojiArtModel.Emoji, by size: CGFloat) -> () {
-//        let size = emojiFontSize // should it be devided by zoomScale or not?
-//        return document.scaleEmoji(emoji, by: size)
-//    }
-    
     private func convertToEmojiCoordinates(_ location: CGPoint, in geometry: GeometryProxy) -> (x: Int, y: Int) {
         let center = geometry.frame(in: .local).center
         let location = CGPoint(
@@ -156,24 +140,14 @@ struct EmojiArtDocumentView: View {
         )
     }
     
-//    private func scale(_ emoji: EmojiArtModel.Emoji, in geometry: GeometryProxy) -> Void {
-//        emoji.text
-//    }
-    
     // MARK: - Zooming
     
     @State private var steadyStateZoomScale: CGFloat = 1
-//    @State private var steadyStateFontSize: CGFloat = 1
-//    @GestureState private var fontSize: CGFloat = 40
     @GestureState private var gestureZoomScale: CGFloat = 1
     
     private var zoomScale: CGFloat {
         steadyStateZoomScale * gestureZoomScale
     }
-    
-//    private var emojiFontSize: CGFloat {
-//        steadyStateFontSize * fontSize
-//    }
     
     private func getZoomScaleForEmoji(_ emoji: EmojiArtModel.Emoji) -> CGFloat {
         selectedEmojis.isEmpty ? zoomScale : selectedEmojis.contains(emoji) ? zoomScale : steadyStateZoomScale
@@ -194,17 +168,6 @@ struct EmojiArtDocumentView: View {
                 }
             }
     }
-    
-//    private func emojiMagnification(_ emoji: EmojiArtModel.Emoji) -> some Gesture {
-//        MagnificationGesture()
-//            .updating($fontSize) { latestGestureScale, fontSize, _ in
-//                fontSize = latestGestureScale
-//            }
-//            .onEnded { gestureScaleAtEnd in
-//                steadyStateFontSize *= gestureScaleAtEnd
-//                convertToEmojiSize(emoji: emoji, by: emojiFontSize)
-//            }
-//    }
     
     private func doubleTapToZoom(in size: CGSize) -> some Gesture {
         TapGesture(count: 2)
