@@ -42,14 +42,14 @@ struct EmojiArtDocumentView: View {
                                         RotationallyAnimatedText(text: emoji.text, angle: rotationAngle)
 //                                        AnimatableText(angle: rotationAngle, name: "", text: emoji.text, fontScale: defaultEmojiFontSize)
                                             .overlay() {
-                                                AnimatedActionButton(title: "Delete", systemImage: "minus.circle.fill") {
+                                                AnimatedActionButton(title: nil, systemImage: "minus.circle.fill") {
                                                     withAnimation { // must be a transition
                                                         selectedEmojisID.remove(emoji.id)
                                                         document.removeEmoji(emoji.text, at: emoji.x, size: CGFloat(emoji.size))
                                                     }
                                                 }
-                                                .offset(x: -geometry.size.width / 10, y: -geometry.size.height / 12)
-                                                .scaleEffect(zoomScale / 2.5)
+                                                .offset(x: -getZoomScaleForEmoji(emoji) * 50, y: -getZoomScaleForEmoji(emoji) * 50)
+                                                .scaleEffect(getZoomScaleForEmoji(emoji) / 2.5)
                                                 .foregroundColor(.accentColor)
                                                 .opacity(0.7)
                                             }
