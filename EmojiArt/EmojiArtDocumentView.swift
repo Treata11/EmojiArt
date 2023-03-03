@@ -71,8 +71,7 @@ struct EmojiArtDocumentView: View {
                                 Text(emoji.text)
                             }
                         }
-//                        .gesture(editMode?.wrappedValue == .active ? zoomGesture : nil) // for selection
-                        .gesture(selectedEmojisID.contains(emoji.id) ? nil : selectEmojiGesture(for: emoji))
+                        .gesture(selectEmojiGesture(for: emoji).simultaneously(with: selectedEmojis.contains(emoji) ? panEmojiGesture(on: emoji) : nil))
                         .font(.system(size: fontSize(for: emoji)))
                         .scaleEffect(emojiZoomScale(emoji))
                         .position(position(for: emoji, in: geometry))
@@ -83,7 +82,7 @@ struct EmojiArtDocumentView: View {
             .onDrop(of: [.plainText,.url,.image], isTargeted: nil) { providers, location in
                 drop(providers: providers, at: location, in: geometry)
             }
-            .gesture(panGesture().simultaneously(with: zoomGesture()))
+            .gesture(zoomGesture().simultaneously(with: gestureEmojiPanOffset == CGSize.zero ? panGesture() : nil))
         }
     }
     
@@ -206,11 +205,15 @@ struct EmojiArtDocumentView: View {
             // use .updating to check wether isLongPressGestureActive or not
             LongPressGesture(minimumDuration: 0.3)
                 .onEnded { _ in
-                    editMode?.wrappedValue = .active
-                    print("\(emoji.id) was added to \(selectedEmojisID)")
-                    withAnimation() {
-                        selectedEmojisID.insert(emoji.id)
-                        rotationAngle = .degrees(5)
+                    if selectedEmojisID.contains(emoji.id) {
+                        // do nothing
+                    } else {
+                        editMode?.wrappedValue = .active
+                        print("\(emoji.id) was added to \(selectedEmojisID)")
+                        withAnimation() {
+                            selectedEmojisID.insert(emoji.id)
+                            rotationAngle = .degrees(5)
+                        }
                     }
                 }
         }
@@ -240,6 +243,7 @@ struct EmojiArtDocumentView: View {
     
     @State private var steadyStatePanOffset: CGSize = CGSize.zero
     @GestureState private var gesturePanOffset: CGSize = CGSize.zero
+    @GestureState private var gestureEmojiPanOffset: CGSize = CGSize.zero
     
     private var panOffset: CGSize {
         (steadyStatePanOffset + gesturePanOffset) * zoomScale
@@ -254,6 +258,18 @@ struct EmojiArtDocumentView: View {
                 steadyStatePanOffset = steadyStatePanOffset + (finalDragGestureValue.translation / zoomScale)
             }
     }
+    
+    private func panEmojiGesture(on emoji: EmojiArtModel.Emoji) -> some Gesture {
+          DragGesture()
+              .updating($gestureEmojiPanOffset) { latestDragGestureValue, gestureEmojiPanOffset, _ in
+                  gestureEmojiPanOffset = latestDragGestureValue.distance / zoomScale
+              }
+              .onEnded { finalDragGestureValue in
+                  for emoji in selectedEmojis {
+                      document.moveEmoji(emoji, by: finalDragGestureValue.distance / zoomScale)
+                  }
+              }
+      }
 
     // MARK: - Palette
     
