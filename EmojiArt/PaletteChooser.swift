@@ -46,19 +46,29 @@ struct PaletteEditor: View {
         VStack(spacing: 0) {
             Text("Palette Editor").font(.headline).padding()
             Divider()
-            TextField("Palette Name", text: $paletteName, onEditingChanged: { began in
-                if !began {
-                    document.renamePalette(chosenPalette, to: paletteName)
+            Form {
+                Section() {
+                    TextField("Palette Name", text: $paletteName, onEditingChanged: { began in
+                        if !began {
+                            document.renamePalette(chosenPalette, to: paletteName)
+                        }
+                    })
+                    TextField("Add Emoji", text: $emojisToAdd, onEditingChanged: { began in
+                        if !began {
+                            chosenPalette = document.addEmoji(emojisToAdd, toPalette: chosenPalette)
+                            emojisToAdd = ""
+                        }
+                    })
                 }
-            }).padding()
-            TextField("Add Emoji", text: $emojisToAdd, onEditingChanged: { began in
-                if !began {
-                    chosenPalette = document.addEmoji(emojisToAdd, toPalette: chosenPalette)
-                    emojisToAdd = ""
+                Section {
+                    Grid(chosenPalette.map { String($0) }, id: \.self) { emoji in
+                        Text(emoji)
+                            .onTapGesture {
+                                document.removeEmoji(emoji, fromPalette: chosenPalette)
+                            }
+                    }
                 }
-            }).padding()
-
-            Spacer()
+            }
         }
         .onAppear { paletteName = document.paletteNames[chosenPalette] ?? "" }
     }
