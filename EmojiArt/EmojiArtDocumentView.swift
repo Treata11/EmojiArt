@@ -18,15 +18,15 @@ struct EmojiArtDocumentView: View {
                 PaletteChooser(document: document, chosenPalette: $chosenPalette)
                 ScrollView(.horizontal) {
                     HStack {
-                        ForEach(EmojiArtDocument.palette.map { String($0) }, id: \.self) { emoji in
+                        ForEach(chosenPalette.map { String($0) }, id: \.self) { emoji in
                             Text(emoji)
                                 .font(Font.system(size: defaultEmojiSize))
                                 .onDrag { NSItemProvider(object: emoji as NSString) }
                         }
                     }
                 }
+                .onAppear { chosenPalette = document.defaultPalette }
             }
-            .onAppear { chosenPalette = document.defaultPalette }
             GeometryReader { geometry in
                 ZStack {
                     Color.white.overlay(
