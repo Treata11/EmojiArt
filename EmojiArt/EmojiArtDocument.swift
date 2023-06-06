@@ -8,23 +8,35 @@
 import SwiftUI
 import Combine
 
-class EmojiArtDocument: ObservableObject
+class EmojiArtDocument: ObservableObject, Hashable, Identifiable, Equatable
 {
+    static func == (lhs: EmojiArtDocument, rhs: EmojiArtDocument) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    let id: UUID
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    
+    
     static let palette = "👩🏻‍🦰🌹🌖☄️⛄️🌟🪨🐌💀"
     
     @Published private var emojiArt: EmojiArt
-    
-    private static var untitled = "EmojiArtDocument.Untitled"
     
     private var autosaveCancellable: AnyCancellable?
     // The declaration of this var is to make the code inside init live after the execution
     // So our publisher does not go away after init finishes executing; it stays in the heap.
     
-    init() {
-        emojiArt = EmojiArt(json: UserDefaults.standard.data(forKey: EmojiArtDocument.untitled)) ?? EmojiArt()
+    init(id: UUID? = nil) {
+        self.id = id ?? UUID()
+        let defaultsKey = "EmojiArtDocument.\(self.id.uuidString)"
+        emojiArt = EmojiArt(json: UserDefaults.standard.data(forKey: defaultsKey)) ?? EmojiArt()
         autosaveCancellable = $emojiArt.sink() { emojiArt in
             print("\(emojiArt.json?.utf8 ?? "nil")")
-            UserDefaults.standard.set(emojiArt.json, forKey: EmojiArtDocument.untitled)
+            UserDefaults.standard.set(emojiArt.json, forKey: defaultsKey)
         }
         fetchBackgroundImageData()
     }
