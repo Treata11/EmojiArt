@@ -12,9 +12,9 @@ struct Spinning: ViewModifier {
     
     func body(content: Content) -> some View {
         content
+            .onAppear() { isVisible = true }
             .rotationEffect(Angle.degrees(360))
             .animation(Animation.linear(duration: 1).repeatForever(autoreverses: false), value: isVisible)
-            .onAppear() { isVisible = true }
     }
     
 }
