@@ -39,7 +39,7 @@ struct EmojiArtDocumentView: View {
                             .offset(panOffset)
                     )
                     .gesture(doubleTapToZoom(in: geometry.size))
-                    if !isLoading {
+                    if isLoading {
                         Image(systemName: "hourglass").imageScale(.large).spinning()
                     } else {
                         ForEach(document.emojis) { emoji in

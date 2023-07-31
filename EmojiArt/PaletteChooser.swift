@@ -45,8 +45,9 @@ struct PaletteEditor: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ZStack {
+            HStack {
                 Text("Palette Editor").font(.headline).padding()
+                Spacer()
                 HStack {
                     Button(action: {
                         isShowing = false
@@ -90,13 +91,6 @@ struct PaletteEditor: View {
     }
     let fontSize: CGFloat = 40
 }
-
-
-
-
-
-
-
 
 struct PaletteChooser_Previews: PreviewProvider {
     static var previews: some View {

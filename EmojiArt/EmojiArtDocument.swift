@@ -20,15 +20,11 @@ class EmojiArtDocument: ObservableObject, Hashable, Identifiable, Equatable
         hasher.combine(id)
     }
     
-    
-    
     static let palette = "👩🏻‍🦰🌹🌖☄️⛄️🌟🪨🐌💀"
     
     @Published private var emojiArt: EmojiArt
     
     private var autosaveCancellable: AnyCancellable?
-    // The declaration of this var is to make the code inside init live after the execution
-    // So our publisher does not go away after init finishes executing; it stays in the heap.
     
     init(id: UUID? = nil) {
         self.id = id ?? UUID()
@@ -41,7 +37,26 @@ class EmojiArtDocument: ObservableObject, Hashable, Identifiable, Equatable
         fetchBackgroundImageData()
     }
     
+    var url: URL? { didSet { self.save(emojiArt) } }    // Immediate document persistence to the new URL if url changes
+    
+    init(url: URL) {
+        self.id = UUID()
+        self.url = url
+        self.emojiArt = EmojiArt(json: try? Data(contentsOf: url)) ?? EmojiArt()
+        fetchBackgroundImageData()
+        autosaveCancellable = $emojiArt.sink { emojiArt in
+            self.save(emojiArt)
+        }
+    }
+    
+    private func save(_ emojiArt: EmojiArt) {
+        if url != nil {
+            try? emojiArt.json?.write(to: url!)
+        }
+    }
+    
     @Published private(set) var backgroundImage: UIImage?
+    
     @Published var steadyStateZoomScale: CGFloat = 1.0
     @Published var steadyStatePanOffset: CGSize = .zero
     
@@ -79,11 +94,11 @@ class EmojiArtDocument: ObservableObject, Hashable, Identifiable, Equatable
     func fetchBackgroundImageData() {
         backgroundImage = nil
         if let url = emojiArt.backgroundURL {
-            fetchImageCancellable?.cancel() // To cancle any outstanding request that we're no longer interested in
+            fetchImageCancellable?.cancel()
             fetchImageCancellable  = URLSession.shared.dataTaskPublisher(for: url)
                 .map { data, urlResponse in UIImage(data: data) }
-                .receive(on: DispatchQueue.main)    // To draw the image using the main thread
-                .replaceError(with: nil)    // assing(to: ,on:) only works if you have Never as Error
+                .receive(on: DispatchQueue.main)
+                .replaceError(with: nil)
                 .assign(to: \EmojiArtDocument.backgroundImage, on: self)
         }
     }
