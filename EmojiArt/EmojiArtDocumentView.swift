@@ -63,7 +63,9 @@ struct EmojiArtDocumentView: View {
                     location = CGPoint(x: location.x / zoomScale, y: location.y * zoomScale )
                     return self.drop(providers: providers, at: location)
                 }
-                .navigationBarItems(trailing: Button(action: {
+                .navigationBarItems(
+                    leading: PickImage,
+                    trailing: Button(action: {
                     if let url = UIPasteboard.general.url, url != document.backgroundURL {
                         confirmBackgroundPaste = true
                     } else {
@@ -91,6 +93,36 @@ struct EmojiArtDocumentView: View {
                 },
                 secondaryButton: .cancel()
             )
+        }
+    }
+    
+    @State var showImagePicker = false
+    @State var imagePickerSourceType = UIImagePickerController.SourceType.camera
+    
+    private var PickImage: some View {
+        HStack {
+            Image(systemName: "photo").imageScale(.large).foregroundColor(.accentColor).onTapGesture {
+                showImagePicker = true
+                imagePickerSourceType = .photoLibrary
+            }
+            Image(systemName: "camera").imageScale(.large).foregroundColor(.accentColor).onTapGesture {
+                showImagePicker = true
+                imagePickerSourceType = .camera
+            }
+            .disabled(!UIImagePickerController.isSourceTypeAvailable(.camera))
+        }
+        .sheet(isPresented: $showImagePicker) {
+            ImagePicker(sourceType: imagePickerSourceType) { image in
+                if image != nil {
+                    DispatchQueue.main.async {
+                        /* A little of saftey buffer for cases that UIKit integrations are
+                         taking place, delaying the user intents here eliminates the chances
+                         that modifying of states occure before or during the body construction.*/
+                        document.backgroundURL = image?.storeInFilesystem()
+                    }
+                }
+                showImagePicker = false
+            }
         }
     }
     

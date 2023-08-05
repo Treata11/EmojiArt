@@ -82,7 +82,9 @@ class EmojiArtDocument: ObservableObject, Hashable, Identifiable, Equatable
     }
     
     var backgroundURL: URL? {
-        get { emojiArt.backgroundURL }
+        get {
+            emojiArt.backgroundURL
+        }
         set {
             emojiArt.backgroundURL = newValue?.imageURL
             fetchBackgroundImageData()
@@ -90,16 +92,16 @@ class EmojiArtDocument: ObservableObject, Hashable, Identifiable, Equatable
     }
     
     private var fetchImageCancellable: AnyCancellable?
-     
-    func fetchBackgroundImageData() {
+    
+    private func fetchBackgroundImageData() {
         backgroundImage = nil
-        if let url = emojiArt.backgroundURL {
+        if let url = self.emojiArt.backgroundURL?.imageURL { // NOTE: added ?.imageURL here in L14 to fix up filesystem url
             fetchImageCancellable?.cancel()
-            fetchImageCancellable  = URLSession.shared.dataTaskPublisher(for: url)
+            fetchImageCancellable = URLSession.shared.dataTaskPublisher(for: url)
                 .map { data, urlResponse in UIImage(data: data) }
                 .receive(on: DispatchQueue.main)
                 .replaceError(with: nil)
-                .assign(to: \EmojiArtDocument.backgroundImage, on: self)
+                .assign(to: \.backgroundImage, on: self)
         }
     }
 }
